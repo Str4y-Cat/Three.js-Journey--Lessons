@@ -14,6 +14,23 @@ const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 
+
+// position
+mesh.position.set(0.5,-1, -1)
+
+// scale
+mesh.scale.set(1,0.5, 2)
+// rotation
+mesh.rotateX(1)
+mesh.rotateY(0.7)
+
+
+
+
+
+
+
+
 /**
  * Sizes
  */
@@ -28,6 +45,9 @@ const sizes = {
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
 camera.position.z = 3
 scene.add(camera)
+
+
+camera.lookAt(mesh.position)
 
 /**
  * Renderer
