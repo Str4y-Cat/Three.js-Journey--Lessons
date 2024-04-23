@@ -1,6 +1,17 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import gsap from 'gsap'
+import GUI from "lil-gui"
+
+/***
+ * Debug
+ */
+const gui = new GUI({
+    width:300,
+    title:"nice debug"
+})
+const debug={}
+
 
 /**
  * Base
@@ -14,10 +25,65 @@ const scene = new THREE.Scene()
 /**
  * Object
  */
+
+debug.color="#3a6ea6"
+debug.randomSegment=2
+
 const geometry = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2)
-const material = new THREE.MeshBasicMaterial({ color: '#ff0000' })
+const material = new THREE.MeshBasicMaterial({ color: debug.color, wireframe:true})
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
+
+const cubeTeaks= gui.addFolder("folder")
+
+cubeTeaks
+    .add(mesh.position, "y")
+    .min(-3)
+    .max(3)
+    .step(0.01)
+    .name("elevation")
+
+
+cubeTeaks
+.add(mesh,"visible")
+
+cubeTeaks
+.add(material,"wireframe")
+
+cubeTeaks
+.addColor(debug,"color").onChange((color)=>{
+    material.color.set(color)
+})
+
+debug.spin=()=>{
+    gsap.to(mesh.rotation,
+        {
+            duration:3,
+            y: mesh.rotation.y + 2*Math.PI,
+            ease: "circ.out",
+        })
+    gsap.to(mesh.position,{
+
+        y: 1,
+        ease: "power4.out",
+        duration:1
+    })
+    gsap.to(mesh.position,{
+
+        y: 0,
+        ease: "power4.in",
+        duration:1,
+        delay:1
+    })
+}
+cubeTeaks.add(debug,"spin")
+
+cubeTeaks.add(debug,"randomSegment").min(1).max(10).step(1).onFinishChange(()=>
+{
+    mesh.geometry.dispose()
+    mesh.geometry=new THREE.BoxGeometry(1, 1, 1, debug.randomSegment, debug.randomSegment, debug.randomSegment)
+})
+
 
 /**
  * Sizes
