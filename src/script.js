@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+import { TextGeometry } from 'three/examples/jsm/Addons.js'
 
 /**
  * Base
@@ -18,16 +20,46 @@ const scene = new THREE.Scene()
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
+const matCapTexture= textureLoader.load()
+
+/**
+ * fonts
+ */
+const fontLoader= new FontLoader()
+fontLoader.load(
+    "fonts/helvetiker_regular.typeface.json",
+    (font)=>
+    {
+        const textGeometry= new TextGeometry(
+            "Hello World",
+            {
+                font:font,
+                size:0.5,
+                height:0.2,
+                curveSegments: 12,
+                bevelEnabled:true,
+                bevelThickness:0.03,
+                bevelSize:0.02,
+                bevelOffset:0,
+                bevelSegments:3
+            }
+        )
+
+        textGeometry.center()
+
+        const textMaterial= new THREE.MeshBasicMaterial()
+        gui.add(textMaterial,"wireframe")
+        const textMesh= new THREE.Mesh(textGeometry,textMaterial)
+        scene.add(textMesh)
+
+
+    }
+)
 
 /**
  * Object
  */
-const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial()
-)
 
-scene.add(cube)
 
 /**
  * Sizes
