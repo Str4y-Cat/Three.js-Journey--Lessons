@@ -7,6 +7,7 @@ import GUI from 'lil-gui'
  */
 // Debug
 const gui = new GUI()
+const debug= {}
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -17,14 +18,81 @@ const scene = new THREE.Scene()
 /**
  * Lights
  */
-const ambientLight = new THREE.AmbientLight(0xffffff, 1.5)
+
+//ambient light
+debug.color="#fff"
+const ambientFolder= gui.addFolder("Ambient Light")
+
+const ambientLight= new THREE.AmbientLight()
+ambientLight.color=new THREE.Color(debug.color)
+ambientLight.intensity=1
+
+ambientFolder.add(ambientLight,"intensity").min(0).max(3).step(0.001)
+
+ambientFolder.addColor(debug,"color").onChange((color)=>{
+    ambientLight.color.set(new THREE.Color(color))
+    
+})
 scene.add(ambientLight)
 
-const pointLight = new THREE.PointLight(0xffffff, 50)
-pointLight.position.x = 2
-pointLight.position.y = 3
-pointLight.position.z = 4
-scene.add(pointLight)
+// //directional light
+// debug.colorDirec="#fff000"
+// const directionalFolder= gui.addFolder("Directional Light")
+
+// const directionalLight= new THREE.DirectionalLight()
+// directionalLight.color=new THREE.Color(debug.colorDirec)
+// directionalLight.intensity=1
+// directionalLight.position.set(1,0.25,0)
+
+// directionalFolder.add(directionalLight,"intensity").min(0).max(3).step(0.001)
+
+// directionalFolder.addColor(debug,"colorDirec").onChange((color)=>{
+//     directionalLight.color.set(new THREE.Color(color))
+    
+// })
+// scene.add(directionalLight)
+
+// //hemisphere light
+// debug.colorHemi="#fff000"
+// debug.colorHemiGround="#fff000"
+// const hemiFolder= gui.addFolder("Hemisphere Light")
+
+
+// const hemisphereLight= new THREE.HemisphereLight()
+// hemisphereLight.color=new THREE.Color(debug.colorHemi)
+// hemisphereLight.groundColor=new THREE.Color(debug.colorHemiGround)
+
+// hemisphereLight.intensity=1
+
+// hemiFolder.add(hemisphereLight,"intensity").min(0).max(3).step(0.001)
+
+// hemiFolder.addColor(debug,"colorHemi").onChange((color)=>{
+//     hemisphereLight.color.set(new THREE.Color(color))
+    
+// })
+// hemiFolder.addColor(debug,"colorHemiGround").onChange((color)=>{
+//     hemisphereLight.groundColor.set(new THREE.Color(color))
+    
+// })
+// scene.add(hemisphereLight)
+
+// //point light
+// debug.colorPoint="#fff"
+// const pointFolder= gui.addFolder("Point Light")
+
+// const PointLight= new THREE.PointLight()
+// PointLight.color=new THREE.Color(debug.colorPoint)
+// PointLight.intensity=1.5
+// PointLight.position.set(0,1,1)
+
+// pointFolder.add(PointLight,"intensity").min(0).max(3).step(0.001)
+
+// pointFolder.addColor(debug,"colorPoint").onChange((color)=>{
+//     PointLight.color.set(new THREE.Color(color))
+    
+// })
+// scene.add(PointLight)
+
 
 /**
  * Objects
