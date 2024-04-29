@@ -52,29 +52,29 @@ directionalFolder.addColor(debug,"colorDirec").onChange((color)=>{
 })
 scene.add(directionalLight)
 
-// //hemisphere light
-// debug.colorHemi="#fff000"
-// debug.colorHemiGround="#fff000"
-// const hemiFolder= gui.addFolder("Hemisphere Light")
+//hemisphere light
+debug.colorHemi="#fff000"
+debug.colorHemiGround="#fff000"
+const hemiFolder= gui.addFolder("Hemisphere Light")
 
 
-// const hemisphereLight= new THREE.HemisphereLight()
-// hemisphereLight.color=new THREE.Color(debug.colorHemi)
-// hemisphereLight.groundColor=new THREE.Color(debug.colorHemiGround)
+const hemisphereLight= new THREE.HemisphereLight()
+hemisphereLight.color=new THREE.Color(debug.colorHemi)
+hemisphereLight.groundColor=new THREE.Color(debug.colorHemiGround)
 
-// hemisphereLight.intensity=1
+hemisphereLight.intensity=1
 
-// hemiFolder.add(hemisphereLight,"intensity").min(0).max(3).step(0.001)
+hemiFolder.add(hemisphereLight,"intensity").min(0).max(3).step(0.001)
 
-// hemiFolder.addColor(debug,"colorHemi").onChange((color)=>{
-//     hemisphereLight.color.set(new THREE.Color(color))
+hemiFolder.addColor(debug,"colorHemi").onChange((color)=>{
+    hemisphereLight.color.set(new THREE.Color(color))
     
-// })
-// hemiFolder.addColor(debug,"colorHemiGround").onChange((color)=>{
-//     hemisphereLight.groundColor.set(new THREE.Color(color))
+})
+hemiFolder.addColor(debug,"colorHemiGround").onChange((color)=>{
+    hemisphereLight.groundColor.set(new THREE.Color(color))
     
-// })
-// scene.add(hemisphereLight)
+})
+scene.add(hemisphereLight)
 
 // //point light
 // debug.colorPoint="#fff"
