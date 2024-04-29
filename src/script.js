@@ -35,22 +35,22 @@ ambientFolder.addColor(debug,"color").onChange((color)=>{
 })
 scene.add(ambientLight)
 
-// //directional light
-// debug.colorDirec="#fff000"
-// const directionalFolder= gui.addFolder("Directional Light")
+//directional light
+debug.colorDirec="#fff000"
+const directionalFolder= gui.addFolder("Directional Light")
 
-// const directionalLight= new THREE.DirectionalLight()
-// directionalLight.color=new THREE.Color(debug.colorDirec)
-// directionalLight.intensity=1
-// directionalLight.position.set(1,0.25,0)
+const directionalLight= new THREE.DirectionalLight()
+directionalLight.color=new THREE.Color(debug.colorDirec)
+directionalLight.intensity=1
+directionalLight.position.set(1,0.25,0)
 
-// directionalFolder.add(directionalLight,"intensity").min(0).max(3).step(0.001)
+directionalFolder.add(directionalLight,"intensity").min(0).max(3).step(0.001)
 
-// directionalFolder.addColor(debug,"colorDirec").onChange((color)=>{
-//     directionalLight.color.set(new THREE.Color(color))
+directionalFolder.addColor(debug,"colorDirec").onChange((color)=>{
+    directionalLight.color.set(new THREE.Color(color))
     
-// })
-// scene.add(directionalLight)
+})
+scene.add(directionalLight)
 
 // //hemisphere light
 // debug.colorHemi="#fff000"
