@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
+import ThreeForceGraph from 'three-forcegraph'
 
 /**
  * Base
@@ -77,13 +78,15 @@ hemiFolder.addColor(debug,"colorHemiGround").onChange((color)=>{
 scene.add(hemisphereLight)
 
 //point light
-debug.colorPoint="#fff"
+debug.colorPoint="#ffffff"
 const pointFolder= gui.addFolder("Point Light")
 
 const PointLight= new THREE.PointLight()
 PointLight.color=new THREE.Color(debug.colorPoint)
 PointLight.intensity=1.5
 PointLight.position.set(0,1,1)
+PointLight.distance=10
+PointLight.decay=2
 
 pointFolder.add(PointLight,"intensity").min(0).max(3).step(0.001)
 
@@ -92,6 +95,75 @@ pointFolder.addColor(debug,"colorPoint").onChange((color)=>{
     
 })
 scene.add(PointLight)
+
+//point light
+debug.colorRect="#ffff0fc"
+const rectFolder= gui.addFolder("rect Light")
+
+const RectAreaLight= new THREE.RectAreaLight()
+RectAreaLight.color=new THREE.Color(debug.colorRect)
+RectAreaLight.intensity=6
+// RectAreaLight.position.set(0,1,1)
+RectAreaLight.width=1
+RectAreaLight.height=1
+
+rectFolder.add(RectAreaLight,"intensity").min(0).max(3).step(0.001)
+rectFolder.add(RectAreaLight.position,"x").min(-5).max(5).step(0.001)
+rectFolder.add(RectAreaLight.position,"y").min(-5).max(5).step(0.001)
+rectFolder.add(RectAreaLight.position,"z").min(-5).max(5).step(0.001)
+
+rectFolder.add(RectAreaLight,"width").min(-5).max(5).step(0.001)
+rectFolder.add(RectAreaLight,"height").min(-5).max(5).step(0.001)
+
+rectFolder.addColor(debug,"colorRect").onChange((color)=>{
+    RectAreaLight.color.set(new THREE.Color(color))
+})
+
+debug.centerRect = ()=>{
+    RectAreaLight.lookAt(new THREE.Vector3())
+}
+
+rectFolder.add(debug,"centerRect").name("center")
+scene.add(RectAreaLight)
+
+
+//point light
+debug.colorSpot="#fff00f"
+const spotFolder= gui.addFolder("Point Light")
+
+const SpotLight= new THREE.SpotLight()
+SpotLight.color=new THREE.Color(debug.colorSpot)
+SpotLight.intensity=1.5
+SpotLight.distance=10
+SpotLight.angle=Math.PI*0.1
+SpotLight.penumbra=0.25
+SpotLight.decay=1
+
+// SpotLight.position.set(0,1,1)
+// SpotLight.distance=10
+// SpotLight.decay=2
+
+spotFolder.add(SpotLight,"intensity").min(0).max(3).step(0.001)
+spotFolder.add(SpotLight,"distance").min(0).max(20).step(0.001)
+spotFolder.add(SpotLight,"angle").min(0*Math.PI).max(2*Math.PI).step(0.001)
+spotFolder.add(SpotLight,"penumbra").min(0).max(1).step(0.001)
+spotFolder.add(SpotLight,"decay").min(0).max(3).step(0.001)
+
+spotFolder.add(SpotLight.position,"x").min(-5).max(5).step(0.001)
+spotFolder.add(SpotLight.position,"y").min(-5).max(5).step(0.001)
+spotFolder.add(SpotLight.position,"z").min(-5).max(5).step(0.001)
+
+
+spotFolder.addColor(debug,"colorSpot").onChange((color)=>{
+    SpotLight.color.set(new THREE.Color(color))
+    
+})
+debug.centerSpot = ()=>{
+    SpotLight.lookAt(new THREE.Vector3())
+}
+
+spotFolder.add(debug,"centerSpot").name("center")
+scene.add(SpotLight)
 
 
 /**
