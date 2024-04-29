@@ -76,22 +76,22 @@ hemiFolder.addColor(debug,"colorHemiGround").onChange((color)=>{
 })
 scene.add(hemisphereLight)
 
-// //point light
-// debug.colorPoint="#fff"
-// const pointFolder= gui.addFolder("Point Light")
+//point light
+debug.colorPoint="#fff"
+const pointFolder= gui.addFolder("Point Light")
 
-// const PointLight= new THREE.PointLight()
-// PointLight.color=new THREE.Color(debug.colorPoint)
-// PointLight.intensity=1.5
-// PointLight.position.set(0,1,1)
+const PointLight= new THREE.PointLight()
+PointLight.color=new THREE.Color(debug.colorPoint)
+PointLight.intensity=1.5
+PointLight.position.set(0,1,1)
 
-// pointFolder.add(PointLight,"intensity").min(0).max(3).step(0.001)
+pointFolder.add(PointLight,"intensity").min(0).max(3).step(0.001)
 
-// pointFolder.addColor(debug,"colorPoint").onChange((color)=>{
-//     PointLight.color.set(new THREE.Color(color))
+pointFolder.addColor(debug,"colorPoint").onChange((color)=>{
+    PointLight.color.set(new THREE.Color(color))
     
-// })
-// scene.add(PointLight)
+})
+scene.add(PointLight)
 
 
 /**
