@@ -1,12 +1,14 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
+import { color } from 'three/examples/jsm/nodes/Nodes.js'
 
 /**
  * Base
  */
 // Debug
 const gui = new GUI()
+const debug= {}
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -22,13 +24,52 @@ const textureLoader = new THREE.TextureLoader()
 /**
  * House
  */
-// Temporary sphere
-const sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 32, 32),
-    new THREE.MeshStandardMaterial({ roughness: 0.7 })
+// house group
+
+const houseGroup= new THREE.Group()
+scene.add(houseGroup)
+
+//  walls
+const wallParams={
+    width:4,
+    height:2.6,
+    depth:4
+}
+const walls= new THREE.Mesh(
+    new THREE.BoxGeometry(wallParams.width,wallParams.height,wallParams.depth),
+    new THREE.MeshStandardMaterial({color:"red"})
 )
-sphere.position.y = 1
-scene.add(sphere)
+walls.position.y+= wallParams.height/2
+// console.log();
+houseGroup.add(walls)
+
+//roof
+const roof= new THREE.Mesh(
+    new THREE.ConeGeometry(2.82842712475,1.5,4),
+    new THREE.MeshStandardMaterial({color:"green", wireframe:true})
+    )
+    roof.position.y+= wallParams.height+roof.geometry.parameters.height/2
+    roof.rotation.y= Math.PI/4
+
+
+    debug.coneRadius= 2.82842712475
+    gui.add(debug,"coneRadius").min(1).max(5).step(0.01).onChange((radius)=>{
+        roof.geometry= new THREE.ConeGeometry(radius,1.5,4)
+    })
+console.log((Math.sqrt(Math.pow(walls.geometry.parameters.height,2)+Math.pow(walls.geometry.parameters.depth,2)))/2)
+houseGroup.add(roof)
+
+
+//door
+const door= new THREE.Mesh(
+    new THREE.PlaneGeometry(1.2, 2.2, 20, 40),
+    new THREE.MeshStandardMaterial({color:"brown"})
+
+)
+
+door.position.z+= wallParams.depth/2+0.001
+door.position.y+= door.geometry.parameters.height/2
+houseGroup.add(door)
 
 // Floor
 const floor = new THREE.Mesh(
