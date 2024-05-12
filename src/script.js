@@ -25,7 +25,14 @@ const parameters={
     color:"#ff00ff",
     particleSize:0.01,
     distance:4,
-    radius:1,
+    radius:5,
+    branches:3,
+    spin:1,
+    randomness:0.2,
+    randomnessPower:3,
+    insideColor:"#ff6030",
+    outsideColor:"#1b3984"
+
 
 }
 
@@ -33,8 +40,16 @@ const bpFolder=gui.addFolder("Base Particles")
 bpFolder.add(parameters,"count").min(100).max(100000).step(100).name(" Count")
 bpFolder.add(parameters,"distance").min(1).max(10).step(0.1).name("Distance")
 bpFolder.add(parameters,"particleSize").min(0.01).max(1).step(0.01).name("Size")
-bpFolder.addColor(parameters,"color").min(0.01).max(20).step(0.01).name("Radius")
-bpFolder.add(parameters,"radius")
+bpFolder.add(parameters,"branches").min(2).max(20).step(1).name("branches")
+bpFolder.add(parameters,"spin").min(-5).max(5).step(0.01).name("spin")
+bpFolder.add(parameters,"randomness").min(0).max(2).step(0.01).name("randomness")
+bpFolder.add(parameters,"randomnessPower").min(1).max(10).step(0.001).name("randomnessPower")
+bpFolder.addColor(parameters,"insideColor")
+bpFolder.addColor(parameters,"outsideColor")
+
+bpFolder.addColor(parameters,"color")
+
+bpFolder.add(parameters,"radius").min(0.1).max(10).step(0.1).name("Radius")
 
 let particlesGeometry=null
 let particlesMaterial= null
@@ -52,16 +67,34 @@ const generateGalaxy= ()=>{
 
     //geometry
     particlesGeometry= new THREE.BufferGeometry()
+    
     //buffer array
     const positions= new Float32Array(parameters.count*3)
+    const colors= new Float32Array(parameters.count*3)
 
+    const colorInside= new THREE.Color(parameters.insideColor)
+    const colorOutside= new THREE.Color(parameters.outsideColor)
     for (let i = 0; i < parameters.count; i++) {
 
         const i3= i*3
         const radius= (Math.random())*parameters.radius
-        positions[i3+0]= (Math.random()-0.5)*parameters.distance//x
-        positions[i3+1]= (Math.random()-0.5)*parameters.distance//y
-        positions[i3+2]= (Math.random()-0.5)*parameters.distance//z
+        const spinAngle= radius* parameters.spin
+        const branchAngle= ((i%parameters.branches)/parameters.branches)*2*Math.PI
+        
+        const randomX= Math.pow(Math.random(),parameters.randomnessPower)* (Math.random()<0.5?1:-1)* parameters.randomness
+        const randomY= Math.pow(Math.random(),parameters.randomnessPower)* (Math.random()<0.5?1:-1)* parameters.randomness
+        const randomZ= Math.pow(Math.random(),parameters.randomnessPower)* (Math.random()<0.5?1:-1)* parameters.randomness
+        
+        positions[i3+0]= Math.cos(branchAngle+spinAngle)*radius+2**randomX//x
+        positions[i3+1]= 2**randomY
+        positions[i3+2]= Math.sin(branchAngle+spinAngle)*radius+2**randomZ//y
+    
+        const mixedColor= colorInside.clone()
+        mixedColor.lerp(colorOutside,radius/ parameters.radius)
+
+        colors[i3+0]=mixedColor.r
+        colors[i3+1]=mixedColor.g
+        colors[i3+2]=mixedColor.b
     }
 
 
@@ -72,13 +105,19 @@ const generateGalaxy= ()=>{
         new THREE.BufferAttribute(positions,3)
     )
 
+    particlesGeometry.setAttribute(
+        "color",
+        new THREE.BufferAttribute(colors,3)
+    )
+
     //material
     particlesMaterial= new THREE.PointsMaterial({
-        color:parameters.color,
+        // color:parameters.color,
         sizeAttenuation:true,
         size:parameters.particleSize,
         depthWrite:false,
-        blending:THREE.AdditiveBlending
+        blending:THREE.AdditiveBlending,
+        vertexColors:true
      })
 
     
