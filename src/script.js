@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
+import { distance } from 'three/examples/jsm/nodes/Nodes.js'
 
 /**
  * Base
@@ -14,14 +15,88 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
+
 /**
- * Test cube
+ * Particles
  */
-const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial()
-)
-scene.add(cube)
+
+const parameters={
+    count:100000,
+    color:"#ff00ff",
+    particleSize:0.01,
+    distance:4,
+    radius:1,
+
+}
+
+const bpFolder=gui.addFolder("Base Particles")
+bpFolder.add(parameters,"count").min(100).max(100000).step(100).name(" Count")
+bpFolder.add(parameters,"distance").min(1).max(10).step(0.1).name("Distance")
+bpFolder.add(parameters,"particleSize").min(0.01).max(1).step(0.01).name("Size")
+bpFolder.addColor(parameters,"color").min(0.01).max(20).step(0.01).name("Radius")
+bpFolder.add(parameters,"radius")
+
+let particlesGeometry=null
+let particlesMaterial= null
+let particles= null
+
+
+
+const generateGalaxy= ()=>{
+
+    if(particlesGeometry!=null){
+        particlesGeometry.dispose()
+        particlesMaterial.dispose()
+        scene.remove(particles)
+    }
+
+    //geometry
+    particlesGeometry= new THREE.BufferGeometry()
+    //buffer array
+    const positions= new Float32Array(parameters.count*3)
+
+    for (let i = 0; i < parameters.count; i++) {
+
+        const i3= i*3
+        const radius= (Math.random())*parameters.radius
+        positions[i3+0]= (Math.random()-0.5)*parameters.distance//x
+        positions[i3+1]= (Math.random()-0.5)*parameters.distance//y
+        positions[i3+2]= (Math.random()-0.5)*parameters.distance//z
+    }
+
+
+    console.log(positions)
+    //buffer attribute
+    particlesGeometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(positions,3)
+    )
+
+    //material
+    particlesMaterial= new THREE.PointsMaterial({
+        color:parameters.color,
+        sizeAttenuation:true,
+        size:parameters.particleSize,
+        depthWrite:false,
+        blending:THREE.AdditiveBlending
+     })
+
+    
+
+
+    //add point mesh
+    particles= new THREE.Points(
+        particlesGeometry,particlesMaterial
+    )
+    //add to scene
+    scene.add(particles)
+
+}
+
+generateGalaxy()
+bpFolder.onFinishChange(()=>{
+    
+    generateGalaxy()})
 
 /**
  * Sizes
