@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
-
+import CANNON from 'cannon'
 /**
  * Debug
  */
@@ -30,6 +30,23 @@ const environmentMapTexture = cubeTextureLoader.load([
     '/textures/environmentMaps/0/pz.png',
     '/textures/environmentMaps/0/nz.png'
 ])
+/**
+ * physics
+ */
+//world
+const world= new CANNON.World()
+world.gravity.set(0,-9.82,0)
+
+//sphere
+const sphereShape= new CANNON.Sphere(0.5)
+const sphereBody= new CANNON.Body({
+    mass:1,
+    position: new CANNON.Vec3(0,3,0),
+    shape:sphereShape
+})
+
+world.addBody(sphereBody)
+
 
 /**
  * Test sphere
@@ -131,11 +148,20 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  * Animate
  */
 const clock = new THREE.Clock()
+let oldElapsedTime=0
 
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+    let deltaTime=elapsedTime-oldElapsedTime
+    oldElapsedTime=elapsedTime 
+    //update physics world
+    world.step(
+        1/60,deltaTime,3
+    )
 
+    //update three.js objects
+    // sphere.position.copy(sphereBody.position)
     // Update controls
     controls.update()
 
