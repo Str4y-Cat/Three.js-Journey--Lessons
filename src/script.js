@@ -148,7 +148,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  */
 const objectsToUpdate=[]
 const sphereGeometry=new THREE.SphereGeometry(1,20,20)
-const sphereMaterial=new THREE.MeshStandardMaterial({
+const defaultTHREEMaterial=new THREE.MeshStandardMaterial({
             metalness: 0.3,
             roughness:0.4,
             envMap:environmentMapTexture
@@ -156,7 +156,7 @@ const sphereMaterial=new THREE.MeshStandardMaterial({
 const createSphere= (radius, position) =>{
     const mesh = new THREE.Mesh(
         sphereGeometry,
-        sphereMaterial
+        defaultTHREEMaterial
 
     )
     mesh.scale.set(radius,radius,radius)
@@ -182,7 +182,7 @@ const createSphere= (radius, position) =>{
 createSphere(0.5,{x:0,y:3,z:0})
 
 
-const updateSphere= (arr)=>{
+const updatePhysics= (arr)=>{
     for(let i=0;i<arr.length;i++){
         // console.log(`DEBUG: mesh Position ${arr[i].mesh.position} body position: ${arr[i].body.position}`)
         arr[i].mesh.position.copy(arr[i].body.position)
@@ -202,6 +202,71 @@ debug.createSphere=()=>{
     )
 }
 gui.add(debug,"createSphere")
+
+
+//boxes
+const BoxGeometry=new THREE.BoxGeometry(1,1,1)
+
+const createBox= ({width:width,height:height,depth:depth}, position) =>{
+//create box mesh
+const boxMesh= new THREE.Mesh(
+    BoxGeometry,
+    defaultTHREEMaterial
+)
+//scale according to values
+boxMesh.scale.set(width, height, depth)
+boxMesh.castShadow=true
+boxMesh.position.copy(position)
+//add to scene
+scene.add(boxMesh)
+
+
+//create complimentary cannon body
+
+//create a shape
+
+const boxShape= new CANNON.Box(new CANNON.Vec3(width,height,depth))
+//create a body
+const boxBody= new CANNON.Body({
+    mass:1,
+    // position:new CANNON.Vec3(0,3,0),
+    shape:boxShape,
+    material:defaultMaterial
+})
+//add to world
+boxBody.position.copy(position)
+
+world.addBody(boxBody)
+
+//add both to objects arr
+objectsToUpdate.push({body: boxBody, mesh: boxMesh})
+
+}
+
+// createBox()
+
+
+
+
+debug.createBox=()=>{
+    const boxSizes={
+        width: Math.random()*0.5,
+        height: Math.random()*0.5,
+        depth: Math.random()*0.5
+    }
+    createBox(
+        boxSizes,
+
+        {
+            x:(Math.random()-0.5)*3,
+            y:3,
+            z:(Math.random()-0.5)*3,
+
+        }
+    )
+}
+gui.add(debug,"createBox")
+
 
 /**
  * Animate
@@ -230,7 +295,7 @@ const tick = () =>
         1/60,deltaTime,3
     )
 
-    updateSphere(objectsToUpdate)
+    updatePhysics(objectsToUpdate)
     //update three.js objects
     // Update controls
     controls.update()
