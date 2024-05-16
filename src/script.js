@@ -30,12 +30,38 @@ const environmentMapTexture = cubeTextureLoader.load([
     '/textures/environmentMaps/0/pz.png',
     '/textures/environmentMaps/0/nz.png'
 ])
+
+/**
+ * sounds
+ */
+
+const hitSound= new Audio('/sounds/hit.mp3')
+const playHitSound=(collision)=>{
+
+    // console.log(collision.contact.getImpactVelocityAlongNormal())
+    const collisionStrength=collision.contact.getImpactVelocityAlongNormal()
+    if(collisionStrength>0.5){
+        
+        if(collisionStrength<=5){
+            hitSound.volume= collisionStrength/5
+
+        }
+        if(hitSound.currentTime>0.02||hitSound.currentTime==0){
+            hitSound.currentTime=0
+            hitSound.play()
+        }
+        
+    }
+    
+}
 /**
  * physics
  */
 //world
 const world= new CANNON.World()
 world.gravity.set(0,-9.82,0)
+world.broadphase=new CANNON.SAPBroadphase(world)
+world.allowSleep=true
 
 //materials
 const defaultMaterial= new CANNON.Material("default")
@@ -172,6 +198,8 @@ const createSphere= (radius, position) =>{
         material:defaultMaterial
     })
     body.position.copy(position)
+    body.addEventListener("collide",playHitSound)
+
     world.addBody(body)
 
     
@@ -186,6 +214,8 @@ const updatePhysics= (arr)=>{
     for(let i=0;i<arr.length;i++){
         // console.log(`DEBUG: mesh Position ${arr[i].mesh.position} body position: ${arr[i].body.position}`)
         arr[i].mesh.position.copy(arr[i].body.position)
+        arr[i].mesh.quaternion.copy(arr[i].body.quaternion)
+
         
     }
 }
@@ -225,7 +255,7 @@ scene.add(boxMesh)
 
 //create a shape
 
-const boxShape= new CANNON.Box(new CANNON.Vec3(width,height,depth))
+const boxShape= new CANNON.Box(new CANNON.Vec3(width/2,height/2,depth/2))
 //create a body
 const boxBody= new CANNON.Body({
     mass:1,
@@ -235,6 +265,8 @@ const boxBody= new CANNON.Body({
 })
 //add to world
 boxBody.position.copy(position)
+boxBody.addEventListener("collide",playHitSound)
+// boxBody.applyLocalForce()
 
 world.addBody(boxBody)
 
@@ -267,7 +299,73 @@ debug.createBox=()=>{
 }
 gui.add(debug,"createBox")
 
+debug.reset=()=>{
+    for (const object of objectsToUpdate){
+        // body
+        object.body.removeEventListener("collide",playHitSound)
+        world.removeBody(object.body)
 
+        // mesh
+        scene.remove(object.mesh)
+
+        
+    }
+    //clear array
+    objectsToUpdate.splice(0, objectsToUpdate.length)
+}
+
+gui.add(debug,"reset")
+
+//////////////////////////////////////
+// const boxGeometry=new THREE.BoxGeometry(1,1,1)
+// const boxMaterial=new THREE.MeshStandardMaterial({
+//             metalness: 0.3,
+//             roughness:0.4,
+//             envMap:environmentMapTexture
+//         })
+// const createBox= (width,height,depth, position) =>{
+//     const mesh = new THREE.Mesh(
+//         boxGeometry,
+//         boxMaterial
+
+//     )
+//     mesh.scale.set(width,height,depth)
+//     mesh.castShadow= true
+//     mesh.position.copy(position)
+//     scene.add(mesh)
+
+//     const shape= new CANNON.Box(new CANNON.Vec3(width/2,height/2,depth/2))
+//     const body = new CANNON.Body({
+//         mass:1,
+//         position:new CANNON.Vec3(0,3,0),
+//         shape:shape,
+//         material:defaultMaterial
+//     })
+//     body.position.copy(position)
+//     world.addBody(body)
+
+    
+//     objectsToUpdate.push({body: body, mesh: mesh})
+
+// }
+
+
+
+// debug.createBox=()=>{
+//     createBox(
+//         Math.random(),
+//         Math.random(),
+//         Math.random(),
+//         {
+//             x:(Math.random()-0.5)*3,
+//             y:3,
+//             z:(Math.random()-0.5)*3,
+
+//         }
+//     )
+// }
+// gui.add(debug,"createBox")
+//////////////////////////////////
 /**
  * Animate
  */
