@@ -1,0 +1,6 @@
+boop
+
+git remote add Lesson-21_Imported-Models https://github.com/an-Unusually-Large-Cat/Three.js-Journey_Lesson-21-Imported-Models.git 
+git fetch Lesson-21_Imported-Models --tags
+git merge --allow-unrelated-histories Lesson-21_Imported-Models/main
+git remote remove Lesson-21_Imported-Models
