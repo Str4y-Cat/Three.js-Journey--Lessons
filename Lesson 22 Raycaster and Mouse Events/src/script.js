@@ -126,6 +126,8 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  */
 const clock = new THREE.Clock()
 
+let currentInstersect= null
+
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
@@ -136,13 +138,34 @@ const tick = () =>
 
     const intersectingObjects= findIntersectingObjects(objectsToTest)
 
-    for( const objects of objectsToTest){
-        objects.material.color.set("red")
+    // for( const objects of objectsToTest){
+    //     objects.material.color.set("red")
+    // }
+
+    // for( const intersect of intersectingObjects){
+    // }
+
+
+    if(intersectingObjects.length){
+        if(currentInstersect==null){
+            console.log("mouse enter")
+            intersectingObjects[0].object.material.color.set("blue")
+            
+        }
+        currentInstersect=intersectingObjects[0]
+    }
+    else{
+        if(currentInstersect){
+            
+        // intersect.object.material.color.set("blue")
+
+        }
+        currentInstersect=null
     }
 
-    for( const intersect of intersectingObjects){
-        intersect.object.material.color.set("blue")
-    }
+
+
+
     //animate objects
 
     object1.position.y=Math.sin(elapsedTime*0.3)
