@@ -84,6 +84,26 @@ window.addEventListener("mousemove",(e)=>{
 
 })
 
+window.addEventListener("click",(e)=>{
+    if(currentInstersect){
+        console.log("click on a sphere")
+
+        switch(currentInstersect.object){
+            case object1:
+                console.log("sphere 1")
+                break
+
+            case object2:
+                console.log("sphere 2")
+                break
+
+            case object3:
+                console.log("sphere 3")
+                break
+        }
+    }
+})
+
 
 window.addEventListener('resize', () =>
 {
