@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
-
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 /**
  * Base
  */
@@ -13,6 +13,22 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+//models
+const gltfLoader=new GLTFLoader()
+let gltfScene=null
+const model= gltfLoader.load("/models/Duck/glTF-Binary/Duck.glb",(gltf)=>{
+    gltfScene=gltf.scene
+    gltf.scene.position.y=-1.2
+    scene.add(gltf.scene)
+})
+
+//lights
+
+const ambientLight= new THREE.AmbientLight("#ffffff",0.5)
+
+const directionalLight= new THREE.DirectionalLight("#ffffff",2.1)
+scene.add(ambientLight,directionalLight)
 
 /**
  * Objects
@@ -158,31 +174,43 @@ const tick = () =>
 
     const intersectingObjects= findIntersectingObjects(objectsToTest)
 
-    // for( const objects of objectsToTest){
-    //     objects.material.color.set("red")
+
+    // if(intersectingObjects.length){
+    //     if(currentInstersect==null){
+    //         console.log("mouse enter")
+    //         intersectingObjects[0].object.material.color.set("blue")
+            
+    //     }
+    //     currentInstersect=intersectingObjects[0]
+    // }
+    // else{
+    //     if(currentInstersect){
+            
+    //     // intersect.object.material.color.set("blue")
+
+    //     }
+    //     currentInstersect=null
     // }
 
-    // for( const intersect of intersectingObjects){
-    // }
+    if(gltfScene){
+        const duckIntersect= raycaster.intersectObject(gltfScene)
+        // console.log(duckIntersect)
 
-
-    if(intersectingObjects.length){
-        if(currentInstersect==null){
-            console.log("mouse enter")
-            intersectingObjects[0].object.material.color.set("blue")
-            
+        if(duckIntersect.length){
+            gltfScene.scale.set(1.2,1.2,1,2)
+            console.log("scaling")
         }
-        currentInstersect=intersectingObjects[0]
-    }
-    else{
-        if(currentInstersect){
-            
-        // intersect.object.material.color.set("blue")
-
+        else{
+            gltfScene.scale.set(1,1,1)
         }
-        currentInstersect=null
-    }
 
+
+
+
+
+    }
+    
+    
 
 
 
