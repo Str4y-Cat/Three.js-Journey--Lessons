@@ -69,6 +69,22 @@ const sizes = {
     height: window.innerHeight
 }
 
+/**
+ * mouse events
+ * 
+ */
+
+const mouse = new THREE.Vector2(0,0)
+
+window.addEventListener("mousemove",(e)=>{
+    mouse.x= (e.clientX/sizes.width-0.5)*2
+    mouse.y= -(e.clientY/sizes.height-0.5)*2
+
+    // console.log(`x:${mouse.x} y:${mouse.y} `)
+
+})
+
+
 window.addEventListener('resize', () =>
 {
     // Update sizes
@@ -114,13 +130,9 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
-    //animate objects
-    object1.position.y=Math.sin(elapsedTime*0.3)
+    //cast a ray
+    raycaster.setFromCamera(mouse,camera)
 
-    object2.position.y=Math.sin(elapsedTime*0.8)
-
-
-    object3.position.y=Math.sin(elapsedTime*0.5)
 
     const intersectingObjects= findIntersectingObjects(objectsToTest)
 
@@ -131,6 +143,16 @@ const tick = () =>
     for( const intersect of intersectingObjects){
         intersect.object.material.color.set("blue")
     }
+    //animate objects
+
+    object1.position.y=Math.sin(elapsedTime*0.3)
+
+    object2.position.y=Math.sin(elapsedTime*0.8)
+
+
+    object3.position.y=Math.sin(elapsedTime*0.5)
+
+    
     // console.log(intersectingObjects)
     // Update controls
     controls.update()
