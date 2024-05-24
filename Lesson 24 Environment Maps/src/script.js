@@ -72,15 +72,23 @@ gui.add(scene.environmentRotation,'y').min(0).max(Math.PI*2).step(0.001).name('e
 //     }
 // )
 
-exrLoader.load('/environmentMaps/nvidiaCanvas-4k.exr',
-    (envMap)=>{
-        envMap.mapping=THREE.EquirectangularReflectionMapping
-        scene.background=envMap
-        scene.environment=envMap
-    })
+// exrLoader.load('/environmentMaps/nvidiaCanvas-4k.exr',
+//     (envMap)=>{
+//         envMap.mapping=THREE.EquirectangularReflectionMapping
+//         scene.background=envMap
+//         scene.environment=envMap
+//     })
 
-//
 
+
+// LDR Environment 
+const environmentMap= textureLoader.load("environmentMaps/blockadesLabsSkybox/anime_art_style_japan_streets_with_cherry_blossom_.jpg")
+environmentMap.mapping=THREE.EquirectangularReflectionMapping
+environmentMap.colorSpace=THREE.SRGBColorSpace
+
+scene.background=environmentMap
+scene.environment=environmentMap
+scene.environmentIntensity=4
 /**
  * Torus Knot
  */
