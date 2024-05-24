@@ -64,7 +64,7 @@ rgbeLoader.load(
     '/environmentMaps/blender-2k.hdr',
     (envMap)=>{
         envMap.mapping=THREE.EquirectangularReflectionMapping
-        scene.background=envMap
+        // scene.background=envMap
         scene.environment=envMap
     }
 )
