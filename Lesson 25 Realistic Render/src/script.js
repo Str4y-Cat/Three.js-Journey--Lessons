@@ -32,6 +32,8 @@ const updateAllMaterials = () =>
         if(child.isMesh)
         {
             // Activate shadow here
+            child.castShadow=true
+            child.receiveShadow=true
         }
     })
 }
@@ -55,6 +57,35 @@ rgbeLoader.load('/environmentMaps/0/2k.hdr', (environmentMap) =>
     scene.background = environmentMap
     scene.environment = environmentMap
 })
+
+//Directional light
+
+const directionalLight= new THREE.DirectionalLight("#ffffff",6)
+directionalLight.position.set(-4,6.5,2.5)
+scene.add(directionalLight)
+
+gui.add(directionalLight,"intensity").min(0).max(10).step(0.001).name("lightIntensity")
+gui.add(directionalLight.position,"x").min(-10).max(10).step(0.001).name("light x")
+gui.add(directionalLight.position,"y").min(-10).max(10).step(0.001).name("light y")
+gui.add(directionalLight.position,"z").min(-10).max(10).step(0.001).name("light z")
+
+//shadows
+
+directionalLight.castShadow=true
+directionalLight.shadow.camera.far=15
+directionalLight.shadow.mapSize.set(1024,1024)
+
+gui.add(directionalLight,"castShadow")
+
+//directional light helper
+const directionalLightHelper= new THREE.CameraHelper(directionalLight.shadow.camera)
+scene.add(directionalLightHelper)
+//
+directionalLight.target.position.set(0,4,0)
+directionalLight.target.updateMatrixWorld()
+// scene.add(directionalLight.target)
+
+
 
 /**
  * Models
@@ -111,11 +142,16 @@ controls.enableDamping = true
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+    canvas: canvas,
+    antialias:true
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+//shadows
+
+renderer.shadowMap.enabled=true
+renderer.shadowMap.type=THREE.PCFSoftShadowMap
 
 //TONE MAPPING
 renderer.toneMapping= THREE.ReinhardToneMapping
