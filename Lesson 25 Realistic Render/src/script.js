@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
+// import { floor } from 'three/examples/jsm/nodes/Nodes.js'
 
 /**
  * Loaders
@@ -37,6 +38,20 @@ const updateAllMaterials = () =>
         }
     })
 }
+
+//textures
+const textureLoader= new THREE.TextureLoader()
+const woodColorTexture= textureLoader.load("/textures/wood_cabinet_worn_long/wood_cabinet_worn_long_diff_1k.jpg")
+woodColorTexture.colorSpace=THREE.SRGBColorSpace
+const woodAORoughnessMetalnessTexture= textureLoader.load("textures/wood_cabinet_worn_long/wood_cabinet_worn_long_arm_1k.jpg")
+const woodNormalTexture= textureLoader.load("textures/wood_cabinet_worn_long/wood_cabinet_worn_long_nor_gl_1k.png")
+
+
+const brickColorTexture= textureLoader.load("/textures/castle_brick_broken_06/castle_brick_broken_06_diff_1k.jpg")
+brickColorTexture.colorSpace=THREE.SRGBColorSpace
+
+const brickAORoughnessMetalnessTexture= textureLoader.load("textures/castle_brick_broken_06/castle_brick_broken_06_arm_1k.jpg")
+const brickNormalTexture= textureLoader.load("textures/castle_brick_broken_06/castle_brick_broken_06_nor_gl_1k.png")
 
 /**
  * Environment map
@@ -78,8 +93,8 @@ directionalLight.shadow.mapSize.set(1024,1024)
 gui.add(directionalLight,"castShadow")
 
 //directional light helper
-const directionalLightHelper= new THREE.CameraHelper(directionalLight.shadow.camera)
-scene.add(directionalLightHelper)
+// const directionalLightHelper= new THREE.CameraHelper(directionalLight.shadow.camera)
+// scene.add(directionalLightHelper)
 //
 directionalLight.target.position.set(0,4,0)
 directionalLight.target.updateMatrixWorld()
@@ -102,6 +117,38 @@ gltfLoader.load(
     }
 )
 
+//floor plane 
+const planeGeometry= new THREE.PlaneGeometry(8,8)
+const floorMaterial=new THREE.MeshStandardMaterial()
+floorMaterial.aoMap=woodAORoughnessMetalnessTexture
+floorMaterial.roughnessMap=woodAORoughnessMetalnessTexture
+floorMaterial.metalnessMap=woodAORoughnessMetalnessTexture
+floorMaterial.normalMap= woodNormalTexture
+floorMaterial.map=woodColorTexture
+
+
+const floor= new THREE.Mesh(
+    planeGeometry,floorMaterial
+)
+floor.rotation.x=-Math.PI*0.5
+scene.add(floor)
+
+//wall plane 
+// const planeGeometry= new THREE.PlaneGeometry(8,8)
+const wallMaterial=new THREE.MeshStandardMaterial()
+wallMaterial.aoMap=brickAORoughnessMetalnessTexture
+wallMaterial.roughnessMap=brickAORoughnessMetalnessTexture
+wallMaterial.metalnessMap=brickAORoughnessMetalnessTexture
+wallMaterial.normalMap= brickNormalTexture
+wallMaterial.map=brickColorTexture
+
+
+
+const wall= new THREE.Mesh(
+    planeGeometry,wallMaterial
+)
+wall.position.set(0,4,-4)
+scene.add(wall)
 /**
  * Sizes
  */
