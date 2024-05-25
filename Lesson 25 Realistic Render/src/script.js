@@ -116,6 +116,23 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+
+//TONE MAPPING
+renderer.toneMapping= THREE.ReinhardToneMapping
+renderer.toneMappingExposure= 3
+gui.add( renderer,'toneMapping',{
+    No:THREE.NoToneMapping,
+    Linear:THREE.LinearToneMapping,
+    Reinhard:THREE.ReinhardToneMapping,
+    Cineon:THREE.CineonToneMapping,
+    ACESFilmic:THREE.ACESFilmicToneMapping
+})
+
+gui.add(renderer,"toneMappingExposure").min(0).max(10).step(0.001)
+
+
+
+
 /**
  * Animate
  */
