@@ -12,7 +12,7 @@ export default class Experience{
         if(instance)
             {return instance}
         instance=this
-        
+
         console.log('experiance online')
 
         //global access 
@@ -25,6 +25,7 @@ export default class Experience{
         this.sizes=new Sizes()
         this.time= new Time()
         this.scene= new THREE.Scene()
+        this.camera= new Camera()
 
         //sizes resize event
         this.sizes.on('resize',()=>{
@@ -40,9 +41,11 @@ export default class Experience{
 
     resize(){
         console.log("resizing")
+        this.camera.resize()
     }
 
     update(){
         // console.log('update the experiance')
+        this.camera.update()
     }
 }
