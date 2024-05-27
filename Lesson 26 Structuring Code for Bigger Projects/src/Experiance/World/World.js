@@ -1,6 +1,7 @@
 import * as THREE from "three"
 
 import Experience from "../Experiance";
+import Environment from "./Environment";
 
 export default class World
 {
@@ -16,5 +17,8 @@ export default class World
         )
         console.log(testMesh)
         this.scene.add(testMesh)
+
+        //Setup
+        this.environment=new Environment()
     }
 }
