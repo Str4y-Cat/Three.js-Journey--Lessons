@@ -2,7 +2,7 @@ import EventEmitter from "./EventEmitter"
 
 export default class Sizes extends EventEmitter{
     constructor(){
-        console.log('sizes online')
+        // console.log('sizes online')
         super()
         //setup
         this.width= window.innerWidth

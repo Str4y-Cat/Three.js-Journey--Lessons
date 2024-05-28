@@ -18,7 +18,7 @@ export default class Experience{
             {return instance}
         instance=this
 
-        console.log('experiance online')
+        // console.log('experiance online')
 
         //global access 
         window.experience=this
@@ -47,7 +47,7 @@ export default class Experience{
     }
 
     resize(){
-        console.log("resizing")
+        // console.log("resizing")
         this.camera.resize()
         this.renderer.resize()
     }

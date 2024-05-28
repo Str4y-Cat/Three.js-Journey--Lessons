@@ -11,7 +11,7 @@ export default class Camera
         this.scene= this.experience.scene
         this.canvas= this.experience.canvas
 
-        console.log("camera")
+        // console.log("camera")
 
         this.setInstance()
         this.setOrbitControls()

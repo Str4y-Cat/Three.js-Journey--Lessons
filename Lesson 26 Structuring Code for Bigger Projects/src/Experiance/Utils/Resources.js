@@ -18,7 +18,7 @@ export default class Resources extends EventEmitter
         this.toLoad=this.sources.length
         this.loaded=0
 
-        console.log('starting resources methods')
+        // console.log('starting resources methods')
         this.setLoaders()
         this.startLoading()
     }
@@ -75,7 +75,7 @@ export default class Resources extends EventEmitter
 
         if(this.loaded=== this.toLoad)
             {
-                console.log('finished')
+                // console.log('finished')
                 this.trigger('ready')
             }
     }
