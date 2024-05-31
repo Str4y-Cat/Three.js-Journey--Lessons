@@ -41,7 +41,11 @@ for(let i=0; i<count; i++)
 // Material
 const material = new THREE.RawShaderMaterial({
     vertexShader: testVertexShader,
-    fragmentShader: testFragmentShader
+    fragmentShader: testFragmentShader,
+    uniforms:
+    {
+        uFrequency:{value:20}
+    }
 })
 
 // Mesh
