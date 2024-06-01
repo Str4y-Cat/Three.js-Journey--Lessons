@@ -21,6 +21,7 @@ const scene = new THREE.Scene()
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
+const flagTexture=textureLoader.load('/textures/flag-french.jpg')
 
 /**
  * Test mesh
@@ -42,14 +43,22 @@ for(let i=0; i<count; i++)
 const material = new THREE.RawShaderMaterial({
     vertexShader: testVertexShader,
     fragmentShader: testFragmentShader,
+    // wireframe:true,
     uniforms:
     {
-        uFrequency:{value:20}
+        uFrequency:{value: new THREE.Vector2(10,5)},
+        uTime:{value:0},
+        uColor:{value: new THREE.Color('orange')},
+        uTexture:{value:flagTexture}
     }
 })
 
+
+gui.add(material.uniforms.uFrequency.value,'x').min(0).max(20).step(0.01).name('frequencyX')
+gui.add(material.uniforms.uFrequency.value,'y').min(0).max(20).step(0.01).name('frequencyY')
 // Mesh
 const mesh = new THREE.Mesh(geometry, material)
+mesh.scale.y=2/3
 scene.add(mesh)
 
 /**
@@ -58,6 +67,7 @@ scene.add(mesh)
 const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
+
 }
 
 window.addEventListener('resize', () =>
@@ -105,6 +115,9 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    //update materials
+    material.uniforms.uTime.value=elapsedTime
 
     // Update controls
     controls.update()
