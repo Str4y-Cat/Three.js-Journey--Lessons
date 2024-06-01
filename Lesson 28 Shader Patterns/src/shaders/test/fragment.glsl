@@ -30,15 +30,14 @@ void main()
     // float strength= mod(vUv.x*10.0,1.0);
     // strength= step(0.8, strength);
 
-    //pattern 11 repeated horizontal gradient
+    // //pattern 11 line grid
+    // float strength= step(0.8,mod(vUv.x*10.0,1.0));
+    // strength+=step(0.8,mod(vUv.y*10.0,1.0));
+
+    //pattern 12 d0t grid
     float strength= step(0.8,mod(vUv.x*10.0,1.0));
-    strength+=step(0.8,mod(vUv.y*10.0,1.0));
-    // strength= step(0.8, strength);
+    strength*=step(0.8,mod(vUv.y*10.0,1.0));
 
-    // float strengthY= mod(vUv.y*10.0,1.0);
-    // strengthY= step(0.8, strengthY);
-
-    // strength+=strengthY;
 
     gl_FragColor = vec4(vec3(strength), 1.0);
 
