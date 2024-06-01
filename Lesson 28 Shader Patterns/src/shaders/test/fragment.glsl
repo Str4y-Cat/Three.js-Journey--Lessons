@@ -34,8 +34,12 @@ void main()
     // float strength= step(0.8,mod(vUv.x*10.0,1.0));
     // strength+=step(0.8,mod(vUv.y*10.0,1.0));
 
-    //pattern 12 d0t grid
-    float strength= step(0.8,mod(vUv.x*10.0,1.0));
+    // //pattern 12 d0t grid
+    // float strength= step(0.8,mod(vUv.x*10.0,1.0));
+    // strength*=step(0.8,mod(vUv.y*10.0,1.0));
+
+    //pattern 12 extended dot grid
+    float strength= step(0.4,mod(vUv.x*10.0,1.0));
     strength*=step(0.8,mod(vUv.y*10.0,1.0));
 
 
