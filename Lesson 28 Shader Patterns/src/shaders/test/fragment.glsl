@@ -171,10 +171,10 @@ void main()
     //pattern 33 
     //  float strength = step(0.25,distance(vUv, vec2(0.5))) ;
 
-     //pattern 34 
+     //pattern 34 circle
     //  float mult= 100.0;
     //  float strength = (sin(vUv.x*mult)*0.2+cos(vUv.y*mult)) ;
-     float strength = abs(distance(vUv, vec2(0.5))-0.25) ;
+     float strength = step(0.01,abs(distance(vUv, vec2(0.5))-0.25)) ;
 
 
 
