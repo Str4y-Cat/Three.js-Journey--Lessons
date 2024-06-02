@@ -212,7 +212,13 @@ void main()
     // float strength = angle;
 
     //pattern 41 angle from center
+    // float angle= atan(vUv.x- 0.5,vUv.y- 0.5);
+    // float strength = angle;
+
+    //pattern 42 wrap around
     float angle= atan(vUv.x- 0.5,vUv.y- 0.5);
+    angle/=PI * 2.0;
+    angle+=0.5;
     float strength = angle;
 
     //final
