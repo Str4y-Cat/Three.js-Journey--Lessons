@@ -232,13 +232,25 @@ void main()
     
     // float strength = mod(angle*20.0,1.0);
 
-    //pattern 44 
+    // //pattern 44 
+    // float angle= atan(vUv.x- 0.5,vUv.y- 0.5);
+    // angle/=PI * 2.0;
+    // angle+=0.5;
+    // angle= sin(angle*200.0);
+    // // angle=mod(angle*20.0,1.0);
+    // float strength = angle;
+
+    //pattern 45
+    
     float angle= atan(vUv.x- 0.5,vUv.y- 0.5);
     angle/=PI * 2.0;
     angle+=0.5;
-    angle= sin(angle*200.0);
-    // angle=mod(angle*20.0,1.0);
-    float strength = angle;
+    float sinusoid= sin(angle*200.0);
+    
+
+    float radius= 0.25+ sinusoid*0.02;
+     float strength = 1.0-step(0.01,abs(distance(vUv, vec2(0.5))-radius)) ;
+
 
     //final
     gl_FragColor = vec4(vec3(strength), 1.0);
