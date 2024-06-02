@@ -121,13 +121,24 @@ void main()
      //pattern 29
     // float strength= 0.015/distance(vUv, vec2(0.5));
 
-    //30
-    vec2 lightUv= vec2(
+    // //30
+    // vec2 lightUv= vec2(
+    //     vUv.x,
+    //     (vUv.y-0.5)*5.0+0.5)
+    // ;
+    // float strength= 0.015/distance(lightUv, vec2(0.5));
+    
+    //pattern 31
+    vec2 lightUv1= vec2(
         vUv.x,
         (vUv.y-0.5)*5.0+0.5)
     ;
-    float strength= 0.015/distance(lightUv, vec2(0.5));
-    
+    vec2 lightUv2= vec2(
+        (vUv.x-0.5)*5.0+0.5,
+        vUv.y)
+    ;
+    float strength= 0.15/distance(lightUv1, vec2(0.5));
+     strength*= 0.15/distance(lightUv2, vec2(0.5));
     
     
     
