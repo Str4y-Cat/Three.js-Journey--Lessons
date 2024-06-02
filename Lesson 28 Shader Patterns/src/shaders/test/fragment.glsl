@@ -133,7 +133,7 @@ void main()
      //pattern 29
     // float strength= 0.015/distance(vUv, vec2(0.5));
 
-    // //30
+    // //30 star
     // vec2 lightUv= vec2(
     //     vUv.x,
     //     (vUv.y-0.5)*5.0+0.5)
@@ -153,22 +153,25 @@ void main()
     //  strength*= 0.15/distance(lightUv2, vec2(0.5));
     
     
-    //pattern 32
+    //pattern 32 rotated star
 
-    vec2 rotatedUv= rotate(vUv, PI/4.0, vec2(0.5));
+    // vec2 rotatedUv= rotate(vUv, PI/4.0, vec2(0.5));
 
-    vec2 lightUv1= vec2(
-        rotatedUv.x,
-        (rotatedUv.y-0.5)*5.0+0.5)
-    ;
-    vec2 lightUv2= vec2(
-        (rotatedUv.x-0.5)*5.0+0.5,
-        rotatedUv.y)
-    ;
-    float strength= 0.15/distance(lightUv1, vec2(0.5));
-     strength*= 0.15/distance(lightUv2, vec2(0.5));
+    // vec2 lightUv1= vec2(
+    //     rotatedUv.x,
+    //     (rotatedUv.y-0.5)*5.0+0.5)
+    // ;
+    // vec2 lightUv2= vec2(
+    //     (rotatedUv.x-0.5)*5.0+0.5,
+    //     rotatedUv.y)
+    // ;
+    // float strength= 0.15/distance(lightUv1, vec2(0.5));
+    //  strength*= 0.15/distance(lightUv2, vec2(0.5));
     
+    //pattern 33 
+     float strength = step(0.25,distance(vUv, vec2(0.5))) ;
     
+    //final
     gl_FragColor = vec4(vec3(strength), 1.0);
 
 
