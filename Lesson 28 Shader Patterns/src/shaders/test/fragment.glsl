@@ -201,11 +201,15 @@ void main()
     //  float strength = 1.0-step(0.01,abs(distance(wavedUv, vec2(0.5))-0.25)) ;
 
     //pattern 39 splat circle
-    vec2 wavedUv= vec2(
-        vUv.y+sin(vUv.x*100.0)* 0.1,
-        vUv.x+sin(vUv.y*100.0)* 0.1
-    );
-     float strength = 1.0-step(0.01,abs(distance(wavedUv, vec2(0.5))-0.25)) ;
+    // vec2 wavedUv= vec2(
+    //     vUv.y+sin(vUv.x*100.0)* 0.1,
+    //     vUv.x+sin(vUv.y*100.0)* 0.1
+    // );
+    //  float strength = 1.0-step(0.01,abs(distance(wavedUv, vec2(0.5))-0.25)) ;
+
+    //pattern 40 angle
+    float angle= atan(vUv.x,vUv.y);
+    float strength = angle;
 
 
     //final
