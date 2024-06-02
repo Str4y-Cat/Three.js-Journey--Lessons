@@ -216,10 +216,21 @@ void main()
     // float strength = angle;
 
     //pattern 42 wrap around
+    // float angle= atan(vUv.x- 0.5,vUv.y- 0.5);
+    // angle/=PI * 2.0;
+    // angle+=0.5;
+    // float strength = angle;
+    
+    //pattern 43 wrap around multiple
+    // vec2 circleUv= vec2(
+    //     mod(vUv.x*10.0,1.0),
+    //     mod(vUv.y*10.0,1.0)
+    // );
     float angle= atan(vUv.x- 0.5,vUv.y- 0.5);
     angle/=PI * 2.0;
     angle+=0.5;
-    float strength = angle;
+    
+    float strength = mod(angle*20.0,1.0);
 
     //final
     gl_FragColor = vec4(vec3(strength), 1.0);
