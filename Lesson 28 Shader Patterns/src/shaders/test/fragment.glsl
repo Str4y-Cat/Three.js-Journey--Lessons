@@ -174,9 +174,12 @@ void main()
      //pattern 34 circle
     //  float mult= 100.0;
     //  float strength = (sin(vUv.x*mult)*0.2+cos(vUv.y*mult)) ;
-     float strength = step(0.01,abs(distance(vUv, vec2(0.5))-0.25)) ;
+    //  float strength = step(0.01,abs(distance(vUv, vec2(0.5))-0.25)) ;
 
-
+    //pattern 35 circle reversed
+    //  float mult= 100.0;
+    //  float strength = (sin(vUv.x*mult)*0.2+cos(vUv.y*mult)) ;
+     float strength = 1.0-step(0.01,abs(distance(vUv, vec2(0.5))-0.25)) ;
 
     //final
     gl_FragColor = vec4(vec3(strength), 1.0);
