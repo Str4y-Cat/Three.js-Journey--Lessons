@@ -300,8 +300,11 @@ void main()
     // // pattern 46 perlin noise
     // float strength= cnoise(vUv*10.0);
 
-// pattern 47 perlin noise stepped
-    float strength= step(0.01,cnoise(vUv*10.0));
+    // pattern 47 perlin noise stepped
+    // float strength= step(0.01,cnoise(vUv*10.0));
+
+    // pattern 48 perlin noise trails
+    float strength= 1.0-abs(cnoise(vUv*10.0));
 
     //final
     gl_FragColor = vec4(vec3(strength), 1.0);
