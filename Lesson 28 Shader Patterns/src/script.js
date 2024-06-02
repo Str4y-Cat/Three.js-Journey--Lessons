@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
-import testVertexShader from './shaders/test/vertex.glsl'
-import testFragmentShader from './shaders/test/fragment.glsl'
+import testVertexShader from './shaders/myShaders/vertex.glsl'
+import testFragmentShader from './shaders/myShaders/fragment.glsl'
 
 /**
  * Base
@@ -26,7 +26,11 @@ const geometry = new THREE.PlaneGeometry(1, 1, 32, 32)
 const material = new THREE.ShaderMaterial({
     vertexShader: testVertexShader,
     fragmentShader: testFragmentShader,
-    side: THREE.DoubleSide
+    side: THREE.DoubleSide,
+    uniforms:
+    {
+        uPerlinShift: {value: 10}
+    }
 })
 
 // Mesh
