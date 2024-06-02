@@ -240,7 +240,7 @@ void main()
     // // angle=mod(angle*20.0,1.0);
     // float strength = angle;
 
-    //pattern 45
+    //pattern 45 wavy circle 2.0
     
     float angle= atan(vUv.x- 0.5,vUv.y- 0.5);
     angle/=PI * 2.0;
