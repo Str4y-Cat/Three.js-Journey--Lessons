@@ -191,15 +191,21 @@ void main()
     // );
     //  float strength = 1.0-step(0.01,abs(distance(wavedUv, vec2(0.5))-0.25)) ;
 
-    //pattern 38 splat circle
-    //  float mult= 100.0;
-    //  float strength = (sin(vUv.x*mult)*0.2+cos(vUv.y*mult)) ;
+    // //pattern 38 splat circle
+    // //  float mult= 100.0;
+    // //  float strength = (sin(vUv.x*mult)*0.2+cos(vUv.y*mult)) ;
+    // vec2 wavedUv= vec2(
+    //     vUv.x+sin(vUv.y*30.0)* 0.1,
+    //     vUv.y+sin(vUv.x*30.0)* 0.1
+    // );
+    //  float strength = 1.0-step(0.01,abs(distance(wavedUv, vec2(0.5))-0.25)) ;
+
+    //pattern 39 splat circle
     vec2 wavedUv= vec2(
-        vUv.x+sin(vUv.y*30.0)* 0.1,
-        vUv.y+sin(vUv.x*30.0)* 0.1
+        vUv.y+sin(vUv.x*100.0)* 0.1,
+        vUv.x+sin(vUv.y*100.0)* 0.1
     );
      float strength = 1.0-step(0.01,abs(distance(wavedUv, vec2(0.5))-0.25)) ;
-
 
 
     //final
