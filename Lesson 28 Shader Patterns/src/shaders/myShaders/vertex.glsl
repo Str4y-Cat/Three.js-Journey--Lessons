@@ -54,8 +54,14 @@ float cnoise(vec2 P){
 void main()
 {
     vPerlinUv=random(uv*20.0);
+    // position.z=vPerlinUv;
+    vec3 newPosition= vec3(
+        position.xy,vPerlinUv*0.1
+    );
 
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vec4 current=modelViewMatrix * vec4(newPosition, 1.0);
+    gl_Position = projectionMatrix * current;
+    
     vUv= uv;
 
 }
