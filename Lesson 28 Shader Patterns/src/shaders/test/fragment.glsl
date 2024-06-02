@@ -62,7 +62,9 @@ void main()
 
     //pattern 16
     
-    float strength = abs(2.0*(vUv.x-0.5))*0.5;
+    float strength = min(abs(vUv.x-0.5),abs(vUv.y-0.5));
+    //   strength += ;
+
 
 
     gl_FragColor = vec4(vec3(strength), 1.0);
