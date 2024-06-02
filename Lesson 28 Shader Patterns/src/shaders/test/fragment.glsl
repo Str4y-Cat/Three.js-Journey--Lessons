@@ -297,9 +297,11 @@ void main()
     // float radius= 0.25+ sinusoid*0.02;
     //  float strength = 1.0-step(0.01,abs(distance(vUv, vec2(0.5))-radius)) ;
 
-    // pattern 46 perlin noise
-    float strength= cnoise(vUv*10.0);
+    // // pattern 46 perlin noise
+    // float strength= cnoise(vUv*10.0);
 
+// pattern 47 perlin noise stepped
+    float strength= step(0.01,cnoise(vUv*10.0));
 
     //final
     gl_FragColor = vec4(vec3(strength), 1.0);
