@@ -24,7 +24,7 @@ const scene = new THREE.Scene()
  * Water
  */
 // Geometry
-const waterGeometry = new THREE.PlaneGeometry(2, 2, 128, 128)
+const waterGeometry = new THREE.PlaneGeometry(2, 2, 512, 512)
 
 // Material
 const waterMaterial = new THREE.ShaderMaterial({
@@ -37,10 +37,14 @@ const waterMaterial = new THREE.ShaderMaterial({
         uBigWavesElevation:{value:0.2},
         uBigWavesFrequency:{value: new THREE.Vector2(4,1.5)},
 
-        uColorOffset: {value: 0.25},
-        uColorMultiplier: {value: 0.25},
+        uColorOffset: {value: 0.08},
+        uColorMultiplier: {value: 5},
         uBigWavesColor1:{value: new THREE.Color("#186691")},
         uBigWavesColor2:{value: new THREE.Color("#9bd8ff")},
+        uPerlinCount:{value:4},
+        uPerlinFrequency:{value:3.0},
+        uPerlinAmplitude:{value:0.15},
+        uPerlinSpeed:{value:0.2},
     }
 })
 
@@ -53,6 +57,12 @@ gui.addColor(waterMaterial.uniforms.uBigWavesColor2,'value').name('Surface Color
 gui.addColor(waterMaterial.uniforms.uBigWavesColor1,'value').name('Depth Color')
 gui.add(waterMaterial.uniforms.uColorOffset,'value').min(0).max(1).step(0.001).name("uColorOffset")
 gui.add(waterMaterial.uniforms.uColorMultiplier,'value').min(0).max(10).step(0.001).name("uColorMultiplier")
+
+gui.add(waterMaterial.uniforms.uPerlinAmplitude,'value').min(0).max(1).step(0.001).name("small Wave height")
+gui.add(waterMaterial.uniforms.uPerlinFrequency,'value').min(0).max(10).step(0.001).name("small Wave Frequency")
+gui.add(waterMaterial.uniforms.uPerlinSpeed,'value').min(0).max(2).step(0.001).name("small Wave Speed")
+gui.add(waterMaterial.uniforms.uPerlinCount,'value').min(0).max(10).step(1).name("small Wave Count")
+
 
 
 // Mesh
