@@ -2,7 +2,7 @@ uniform float uSize;
 attribute float aScale;
 
 varying float vCameraDistance;
-
+varying vec3 vColor;
 
 
 void main()
@@ -23,6 +23,9 @@ void main()
     gl_PointSize *= ( 1.0 / - viewPosition.z );
     // gl_PointSize=uSize*aScale;
 
-
+    /**
+    *color
+    */
+    vColor=color;
     // vCameraDistance= 
 }
