@@ -24,7 +24,7 @@ const scene = new THREE.Scene()
  * Water
  */
 // Geometry
-const waterGeometry = new THREE.PlaneGeometry(2, 2, 512, 512)
+const waterGeometry = new THREE.PlaneGeometry(10, 10, 512, 512)
 
 // Material
 const waterMaterial = new THREE.ShaderMaterial({
@@ -61,7 +61,7 @@ gui.add(waterMaterial.uniforms.uColorMultiplier,'value').min(0).max(10).step(0.0
 gui.add(waterMaterial.uniforms.uPerlinAmplitude,'value').min(0).max(1).step(0.001).name("small Wave height")
 gui.add(waterMaterial.uniforms.uPerlinFrequency,'value').min(0).max(10).step(0.001).name("small Wave Frequency")
 gui.add(waterMaterial.uniforms.uPerlinSpeed,'value').min(0).max(2).step(0.001).name("small Wave Speed")
-gui.add(waterMaterial.uniforms.uPerlinCount,'value').min(0).max(10).step(1).name("small Wave Count")
+gui.add(waterMaterial.uniforms.uPerlinCount,'value').min(0).max(5).step(1).name("small Wave Count")
 
 
 
