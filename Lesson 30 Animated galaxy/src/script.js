@@ -2,6 +2,8 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 
+import vertexShader from './shaders/points/vertex.glsl'
+import fragmentShader from './shaders/points/fragment.glsl'
 /**
  * Base
  */
@@ -48,6 +50,8 @@ const generateGalaxy = () =>
 
     const positions = new Float32Array(parameters.count * 3)
     const colors = new Float32Array(parameters.count * 3)
+    const aScale = new Float32Array(parameters.count)
+
 
     const insideColor = new THREE.Color(parameters.insideColor)
     const outsideColor = new THREE.Color(parameters.outsideColor)
@@ -76,21 +80,33 @@ const generateGalaxy = () =>
         colors[i3    ] = mixedColor.r
         colors[i3 + 1] = mixedColor.g
         colors[i3 + 2] = mixedColor.b
+
+        aScale[i] = Math.random()
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
-
+    geometry.setAttribute('aScale', new THREE.BufferAttribute(aScale, 1))
+    // console.log(particleSize)
     /**
      * Material
      */
-    material = new THREE.PointsMaterial({
-        size: parameters.size,
-        sizeAttenuation: true,
+    material = new THREE.ShaderMaterial({
+        // size: parameters.size,
+        // sizeAttenuation: true,
+        vertexShader:vertexShader,
+        fragmentShader:fragmentShader,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-        vertexColors: true
+        vertexColors: true,
+        uniforms:{
+            uSize:{value:8 * renderer.getPixelRatio()},
+        }
     })
+
+    const shaderFolder= gui.addFolder('Shader');
+    shaderFolder.add(material.uniforms.uSize,'value').min(0.01).max(10).step(0.01).name('Particle size')
+
 
     /**
      * Points
@@ -99,7 +115,7 @@ const generateGalaxy = () =>
     scene.add(points)
 }
 
-generateGalaxy()
+
 
 gui.add(parameters, 'count').min(100).max(1000000).step(100).onFinishChange(generateGalaxy)
 gui.add(parameters, 'radius').min(0.01).max(20).step(0.01).onFinishChange(generateGalaxy)
@@ -159,6 +175,8 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  * Animate
  */
 const clock = new THREE.Clock()
+
+generateGalaxy()
 
 const tick = () =>
 {
