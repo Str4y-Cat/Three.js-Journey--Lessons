@@ -51,6 +51,7 @@ const generateGalaxy = () =>
     const positions = new Float32Array(parameters.count * 3)
     const colors = new Float32Array(parameters.count * 3)
     const aScale = new Float32Array(parameters.count)
+    const randomness= new Float32Array(parameters.count *3)
 
 
     const insideColor = new THREE.Color(parameters.insideColor)
@@ -69,9 +70,13 @@ const generateGalaxy = () =>
         const randomY = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : - 1) * parameters.randomness * radius
         const randomZ = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : - 1) * parameters.randomness * radius
 
-        positions[i3    ] = Math.cos(branchAngle) * radius + randomX
-        positions[i3 + 1] = randomY
-        positions[i3 + 2] = Math.sin(branchAngle) * radius + randomZ
+        positions[i3    ] = Math.cos(branchAngle) * radius
+        positions[i3 + 1] = 0
+        positions[i3 + 2] = Math.sin(branchAngle) * radius 
+
+        randomness[i3+0] = randomX
+        randomness[i3+1] = randomY
+        randomness[i3+2] = randomZ
 
         // Color
         const mixedColor = insideColor.clone()
@@ -87,6 +92,7 @@ const generateGalaxy = () =>
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
     geometry.setAttribute('aScale', new THREE.BufferAttribute(aScale, 1))
+    geometry.setAttribute('aRandomness', new THREE.BufferAttribute(randomness, 3))
     // console.log(particleSize)
     /**
      * Material
@@ -101,11 +107,11 @@ const generateGalaxy = () =>
         vertexColors: true,
         uniforms:{
             uSize:{value:30 * renderer.getPixelRatio()},
+            uTime:{value:0}
         }
     })
 
-    const shaderFolder= gui.addFolder('Shader');
-    shaderFolder.add(material.uniforms.uSize,'value').min(0.01).max(10).step(0.01).name('Particle size')
+    // const shaderFolder= gui.addFolder('Shader');
 
 
     /**
@@ -115,6 +121,7 @@ const generateGalaxy = () =>
     scene.add(points)
 }
 
+    // gui.add(material.uniforms.uSize,'value').min(0.01).max(10).step(0.01).name('Particle size')
 
 
 gui.add(parameters, 'count').min(100).max(1000000).step(100).onFinishChange(generateGalaxy)
@@ -181,6 +188,9 @@ generateGalaxy()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    // update material
+    material.uniforms.uTime.value=elapsedTime;
 
     // Update controls
     controls.update()
