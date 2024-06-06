@@ -4,7 +4,15 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import GUI from 'lil-gui'
 import vertexShaderIn from '/shader/vertexshader_withinMain.glsl'
 import vertexShaderOut from '/shader/vertexshader_outsideMain.glsl'
-// console.log(vertexShader)
+import depth_vertexShaderIn from '/shader/depth_vertexshader_withinMain.glsl'
+import depth_vertexShaderOut from '/shader/depth_vertexshader_outsideMain.glsl'
+import vertexShaderNormal from '/shader/vertexShader_normal.glsl'
+console.log(vertexShaderNormal)
+console.log(vertexShaderOut)
+console.log(vertexShaderIn)
+
+
+
 
 /**
  * Base
@@ -66,6 +74,18 @@ const mapTexture = textureLoader.load('/models/LeePerrySmith/color.jpg')
 mapTexture.colorSpace = THREE.SRGBColorSpace
 const normalTexture = textureLoader.load('/models/LeePerrySmith/normal.jpg')
 
+/**
+ * Plane
+ */
+const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(15, 15, 15),
+    new THREE.MeshStandardMaterial()
+)
+plane.rotation.y = Math.PI
+plane.position.y = - 5
+plane.position.z = 5
+scene.add(plane)
+
 // Material
 const material = new THREE.MeshStandardMaterial( {
     map: mapTexture,
@@ -78,17 +98,34 @@ const depthMaterial = new THREE.MeshDepthMaterial({
 
 const customUniforms= 
 {
-    uTime:{value:0}
+    uTime:{value:0},
+    uAngle:{value:0.3}
 }
+
+gui.add(customUniforms.uAngle,'value').min(-5).max(5).step(0.001).name("twist angle")
 
 material.onBeforeCompile=(shader)=>
     {
         // console.log(shader)
         shader.uniforms.uTime=customUniforms.uTime
+        shader.uniforms.uAngle=customUniforms.uAngle
 
-        shader.vertexShader= shader.vertexShader.replace('#include <begin_vertex>',vertexShaderIn)
         shader.vertexShader= shader.vertexShader.replace('#include <common>',vertexShaderOut)
+
+        shader.vertexShader= shader.vertexShader.replace('#include <beginnormal_vertex>',vertexShaderNormal)
+        shader.vertexShader= shader.vertexShader.replace('#include <begin_vertex>',vertexShaderIn)
+
     }
+
+depthMaterial.onBeforeCompile=(shader)=>{
+    // console.log(shader)
+    shader.uniforms.uTime=customUniforms.uTime
+    shader.uniforms.uAngle=customUniforms.uAngle
+
+    shader.vertexShader= shader.vertexShader.replace('#include <begin_vertex>',depth_vertexShaderIn)
+    shader.vertexShader= shader.vertexShader.replace('#include <common>',depth_vertexShaderOut)
+
+}
 
 
 
@@ -182,6 +219,9 @@ const tick = () =>
 
     //update shader animaiton
     customUniforms.uTime.value=elapsedTime
+    // customUniforms.uAngle.value=Math.sin(elapsedTime)
+    // console.log(Math.sin(elapsedTime))
+
 
     // Update controls
     controls.update()

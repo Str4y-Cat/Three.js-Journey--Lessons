@@ -1,5 +1,6 @@
 #include <common>
 uniform float uTime;
+uniform float uAngle;
 
 
 mat2 get2dRotateMatrix(float _angle)

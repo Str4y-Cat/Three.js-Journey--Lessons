@@ -1,7 +1,5 @@
-#include <begin_vertex>
+ #include <begin_vertex>
 
-float angle= 0.5*(transformed.y + uTime);
-mat2 rotMatrix=get2dRotateMatrix(angle);
-transformed.xz*=rotMatrix;
+            transformed.xz = rotMatrix * transformed.xz;
 
 // transformed.xy=get2dRotateMatrix(angle);
