@@ -2,6 +2,9 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import GUI from 'lil-gui'
+import vertexShaderIn from '/shader/vertexshader_withinMain.glsl'
+import vertexShaderOut from '/shader/vertexshader_outsideMain.glsl'
+// console.log(vertexShader)
 
 /**
  * Base
@@ -69,6 +72,26 @@ const material = new THREE.MeshStandardMaterial( {
     normalMap: normalTexture
 })
 
+const depthMaterial = new THREE.MeshDepthMaterial({
+    depthPacking:THREE.RGBADepthPacking
+})
+
+const customUniforms= 
+{
+    uTime:{value:0}
+}
+
+material.onBeforeCompile=(shader)=>
+    {
+        // console.log(shader)
+        shader.uniforms.uTime=customUniforms.uTime
+
+        shader.vertexShader= shader.vertexShader.replace('#include <begin_vertex>',vertexShaderIn)
+        shader.vertexShader= shader.vertexShader.replace('#include <common>',vertexShaderOut)
+    }
+
+
+
 /**
  * Models
  */
@@ -80,6 +103,7 @@ gltfLoader.load(
         const mesh = gltf.scene.children[0]
         mesh.rotation.y = Math.PI * 0.5
         mesh.material = material
+        mesh.customDepthMaterial=depthMaterial
         scene.add(mesh)
 
         // Update materials
@@ -155,6 +179,9 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    //update shader animaiton
+    customUniforms.uTime.value=elapsedTime
 
     // Update controls
     controls.update()
