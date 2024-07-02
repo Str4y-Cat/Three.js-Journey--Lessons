@@ -1,10 +1,39 @@
+uniform float uTime;
+uniform sampler2D uPerlinTexture;
+
 varying vec2 vUv;
 
+#include ../includes/rotate2D.glsl
 
 void main()
 {
+
+    float twistPerlin= texture(
+        uPerlinTexture,
+        vec2(0.5,uv.y*0.2-uTime*0.005)
+        ).r;
+
+    //newPosition
+    vec3 newPosition=position;
+    float angle=twistPerlin*10.0;
+
+
+    
+    // float angle= newPosition.y+twistPerlin;
+    newPosition.xz= rotate2d(newPosition.xz,angle);
+
+
+
+    //wind
+    vec2 windOffset= vec2(
+        texture(uPerlinTexture,vec2(0.25,uTime*0.01)).r-0.5,
+        texture(uPerlinTexture,vec2(0.63,uTime*0.01)).r-0.5
+    );
+    windOffset*=pow(uv.y,2.0)*10.0;
+    newPosition.xz+= windOffset;
+
     //final positions
-    gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);
+    gl_Position=projectionMatrix*modelViewMatrix*vec4(newPosition,1.0);
 
     //Varyings
     vUv=uv;
