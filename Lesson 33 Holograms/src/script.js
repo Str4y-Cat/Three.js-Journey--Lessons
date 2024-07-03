@@ -3,6 +3,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 
+
+import hologramVertexShader from './shaders/holographic/vertex.glsl'
+import hologramFragmentShader from './shaders/holographic/fragment.glsl'
 /**
  * Base
  */
@@ -77,7 +80,16 @@ gui
 /**
  * Material
  */
-const material = new THREE.MeshBasicMaterial()
+const material = new THREE.ShaderMaterial(
+    {
+        vertexShader:hologramVertexShader,
+        fragmentShader:hologramFragmentShader,
+        transparent:true,
+        uniforms:{
+            uTime: new THREE.Uniform(0)
+        }
+    }
+)
 
 /**
  * Objects
@@ -122,6 +134,10 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    //update material
+    material.uniforms.uTime.value=elapsedTime
+
 
     // Rotate objects
     if(suzanne)
