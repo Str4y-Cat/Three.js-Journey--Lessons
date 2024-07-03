@@ -80,14 +80,26 @@ gui
 /**
  * Material
  */
+const debug={}
+debug.color="#70c1ff"
 const material = new THREE.ShaderMaterial(
     {
         vertexShader:hologramVertexShader,
         fragmentShader:hologramFragmentShader,
         transparent:true,
         uniforms:{
-            uTime: new THREE.Uniform(0)
-        }
+            uTime: new THREE.Uniform(0),
+            uColor: new THREE.Uniform(new THREE.Color(debug.color))
+        },
+        side:THREE.DoubleSide,
+        depthWrite:false,
+        blending:THREE.AdditiveBlending
+
+    }
+)
+gui.addColor(debug,"color").onChange(color=>
+    {
+        material.uniforms.uColor.value=new THREE.Color(color)
     }
 )
 
@@ -140,17 +152,17 @@ const tick = () =>
 
 
     // Rotate objects
-    if(suzanne)
-    {
-        suzanne.rotation.x = - elapsedTime * 0.1
-        suzanne.rotation.y = elapsedTime * 0.2
-    }
+    // if(suzanne)
+    // {
+    //     suzanne.rotation.x = - elapsedTime * 0.1
+    //     suzanne.rotation.y = elapsedTime * 0.2
+    // }
 
-    sphere.rotation.x = - elapsedTime * 0.1
-    sphere.rotation.y = elapsedTime * 0.2
+    // sphere.rotation.x = - elapsedTime * 0.1
+    // sphere.rotation.y = elapsedTime * 0.2
 
-    torusKnot.rotation.x = - elapsedTime * 0.1
-    torusKnot.rotation.y = elapsedTime * 0.2
+    // torusKnot.rotation.x = - elapsedTime * 0.1
+    // torusKnot.rotation.y = elapsedTime * 0.2
 
     // Update controls
     controls.update()
