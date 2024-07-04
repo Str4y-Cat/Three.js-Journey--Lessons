@@ -1,8 +1,9 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import GUI from 'lil-gui'
-import ThreeForceGraph from 'three-forcegraph'
 
+import fireworkVertexShader from './shaders/firework/vertex.glsl'
+import fireworkFragmentShader from './shaders/firework/fragment.glsl'
 /**
  * Base
  */
@@ -23,14 +24,20 @@ const textureLoader = new THREE.TextureLoader()
  */
 const sizes = {
     width: window.innerWidth,
-    height: window.innerHeight
+    height: window.innerHeight,
+    pixelRatio: Math.min(2,window.devicePixelRatio)
 }
+
+sizes.resolution= new THREE.Vector2(sizes.width*sizes.pixelRatio,sizes.height*sizes.pixelRatio)
 
 window.addEventListener('resize', () =>
 {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
+    sizes.resolution.set(sizes.width,sizes.height)
+    sizes.pixelRatio= Math.min(2,window.devicePixelRatio)
+
 
     // Update camera
     camera.aspect = sizes.width / sizes.height
@@ -38,7 +45,7 @@ window.addEventListener('resize', () =>
 
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setPixelRatio(sizes.pixelRatio)
 })
 
 /**
@@ -61,13 +68,13 @@ const renderer = new THREE.WebGLRenderer({
     antialias: true
 })
 renderer.setSize(sizes.width, sizes.height)
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+renderer.setPixelRatio(sizes.pixelRatio)
 
 /**
  * fireworks
  */
 
-const createFirework = (count,position) =>
+const createFirework = (count,position,size) =>
     {
         //geometry
         const positionsArray= new Float32Array(count*3)
@@ -83,7 +90,15 @@ const createFirework = (count,position) =>
         const geometry = new THREE.BufferGeometry()
         geometry.setAttribute("position",new THREE.BufferAttribute(positionsArray,3))
         
-        const material= new THREE.PointsMaterial({size:0.1,color:'white'})
+        // const material= new THREE.PointsMaterial({size:0.1,color:'white'})
+        const material= new THREE.ShaderMaterial({
+            vertexShader:fireworkVertexShader,
+            fragmentShader:fireworkFragmentShader,
+            uniforms:{
+                uSize:new THREE.Uniform(size),
+                uResolution: new THREE.Uniform(sizes.resolution),
+            }
+        })
 
         const fireworks= new THREE.Points(geometry,material)
         fireworks.position.copy(position)
@@ -91,7 +106,11 @@ const createFirework = (count,position) =>
         scene.add(fireworks)
     
     }
-createFirework(400,new THREE.Vector3())
+createFirework(
+    400,
+    new THREE.Vector3(),
+    0.5
+)
 
 
 /**
