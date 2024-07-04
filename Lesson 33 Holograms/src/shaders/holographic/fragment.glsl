@@ -4,6 +4,7 @@ uniform vec3 uColor;
 varying vec2 vUv;
 varying vec3 vPosition;
 varying vec3 vNormal;
+varying float vGlitch;
 
 
 
@@ -40,6 +41,10 @@ void main()
 
     //Final color
     gl_FragColor= vec4(uColor,holographic);
+    if(vGlitch!=0.0)
+    {
+        gl_FragColor= vec4(vGlitch,uColor.gb/2.0,holographic);
+    }
     // gl_FragColor= vec4(1.0,1.0,1.0,falloff);
     // gl_FragColor= vec4(vNormal,1.0);
 
