@@ -144,6 +144,19 @@ directionalLightHelper.position.set(0,0,3)
 
 scene.add(directionalLightHelper)
 
+
+
+const directionalPointHelper= new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.1,2),
+    new THREE.MeshBasicMaterial()
+)
+
+directionalPointHelper.material.color.setRGB(1,0.1,0.1)
+// directionalLightHelper.material.side= THREE.DoubleSide
+directionalPointHelper.position.set(0,2.5,0)
+
+scene.add(directionalPointHelper)
+
 /**
  * Animate
  */
