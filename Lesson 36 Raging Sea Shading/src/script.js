@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 import waterVertexShader from './shaders/water/vertex.glsl'
 import waterFragmentShader from './shaders/water/fragment.glsl'
+import { mx_bilerp_0 } from 'three/examples/jsm/nodes/materialx/lib/mx_noise.js'
 
 /**
  * Base
@@ -22,10 +23,11 @@ const scene = new THREE.Scene()
  */
 // Geometry
 const waterGeometry = new THREE.PlaneGeometry(2, 2, 512, 512)
-
+waterGeometry.deleteAttribute('normal')
+waterGeometry.deleteAttribute('uv')
 // Colors
-debugObject.depthColor = '#186691'
-debugObject.surfaceColor = '#9bd8ff'
+debugObject.depthColor = '#ff4000'
+debugObject.surfaceColor = '#151c37'
 
 gui.addColor(debugObject, 'depthColor').onChange(() => { waterMaterial.uniforms.uDepthColor.value.set(debugObject.depthColor) })
 gui.addColor(debugObject, 'surfaceColor').onChange(() => { waterMaterial.uniforms.uSurfaceColor.value.set(debugObject.surfaceColor) })
@@ -49,8 +51,8 @@ const waterMaterial = new THREE.ShaderMaterial({
 
         uDepthColor: { value: new THREE.Color(debugObject.depthColor) },
         uSurfaceColor: { value: new THREE.Color(debugObject.surfaceColor) },
-        uColorOffset: { value: 0.08 },
-        uColorMultiplier: { value: 5 }
+        uColorOffset: { value: 0.925 },
+        uColorMultiplier: { value: 1 }
     }
 })
 
@@ -71,6 +73,26 @@ gui.add(waterMaterial.uniforms.uColorMultiplier, 'value').min(0).max(10).step(0.
 const water = new THREE.Mesh(waterGeometry, waterMaterial)
 water.rotation.x = - Math.PI * 0.5
 scene.add(water)
+
+//Helpers
+const directionalLightHelper= new THREE.Mesh(
+    new THREE.PlaneGeometry(0.2,0.2),
+    new THREE.MeshBasicMaterial({
+        side:THREE.DoubleSide,
+        color:'white',
+    })
+)
+
+directionalLightHelper.position.x=-1.0
+directionalLightHelper.position.y=0.5
+directionalLightHelper.position.z=0.0
+directionalLightHelper.lookAt(new THREE.Vector3(0,0,0))
+scene.add(directionalLightHelper)
+
+
+// const axisHelper= new THREE.AxesHelper()
+// axisHelper.position.y+=0.25;
+// scene.add(axisHelper)
 
 /**
  * Sizes
@@ -113,6 +135,7 @@ controls.enableDamping = true
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
+renderer.toneMapping=THREE.ACESFilmicToneMapping
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
