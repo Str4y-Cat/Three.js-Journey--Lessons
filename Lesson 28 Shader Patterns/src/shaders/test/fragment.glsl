@@ -211,12 +211,12 @@ void main()
     // vec2 lightUv2= vec2(
     //     (rotatedUv.x-0.5)*5.0+0.5,
     //     rotatedUv.y)
-    // ;
+    // ;j
     // float strength= 0.15/distance(lightUv1, vec2(0.5));
     //  strength*= 0.15/distance(lightUv2, vec2(0.5));
     
     //pattern 33 
-    //  float strength = step(0.25,distance(vUv, vec2(0.5))) ;
+     float strength = step(0.25,distance(vUv, vec2(0.5))) ;
 
      //pattern 34 circle
     //  float mult= 100.0;
@@ -317,9 +317,9 @@ void main()
     *COLOURED VERSION
     *
     **/
-    float strength= step(0.9,sin(cnoise(vUv*10.0)*20.0));
+    // float strength= step(0.9,sin(cnoise(vUv*10.0)*20.0));
 
-    strength= clamp(strength,0.0, 1.0);
+    // strength= clamp(strength,0.0, 1.0);
     
     vec3 blackColor= vec3(0.0);
     vec3 uvColor= vec3(vUv,1.0);
