@@ -3,12 +3,14 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 import earthVertexShader from './shaders/earth/vertex.glsl'
 import earthFragmentShader from './shaders/earth/fragment.glsl'
-
+import atmosphereVertexShader from './shaders/atmosphere/vertex.glsl'
+import atmosphereFragmentShader from './shaders/atmosphere/fragment.glsl'
 /**
  * Base
  */
 // Debug
 const gui = new GUI()
+const debug={}
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -22,6 +24,39 @@ const textureLoader = new THREE.TextureLoader()
 /**
  * Earth
  */
+const earthParameters={}
+earthParameters.atmosphereDayColor='#00aaff'
+earthParameters.atmosphereTwilightColor='#ff6600'
+
+gui.addColor(earthParameters,'atmosphereDayColor').onChange(
+    ()=>
+    {
+        earthMaterial.uniforms.uAtmosphereDayColor.value.set(earthParameters.atmosphereDayColor)
+        atmosphereMaterial.uniforms.uAtmosphereDayColor.value.set(earthParameters.atmosphereDayColor)
+    }
+)
+gui.addColor(earthParameters,'atmosphereTwilightColor').onChange(
+    ()=>
+    {
+        earthMaterial.uniforms.uAtmosphereTwilightColor.value.set(earthParameters.atmosphereTwilightColor)
+        atmosphereMaterial.uniforms.uAtmosphereTwilightColor.value.set(earthParameters.atmosphereTwilightColor)
+    }
+)
+
+//textures
+const earthDayTexture = textureLoader.load('./earth/day.jpg')
+earthDayTexture.colorSpace =THREE.SRGBColorSpace
+earthDayTexture.anisotropy =8
+
+const earthNightTexture = textureLoader.load('./earth/night.jpg')
+earthNightTexture.colorSpace = THREE.SRGBColorSpace
+earthNightTexture.anisotropy =8
+
+const earthSpecularCloudsTexture = textureLoader.load('./earth/specularClouds.jpg')
+earthSpecularCloudsTexture.anisotropy =8
+
+
+
 // Mesh
 const earthGeometry = new THREE.SphereGeometry(2, 64, 64)
 const earthMaterial = new THREE.ShaderMaterial({
@@ -29,11 +64,67 @@ const earthMaterial = new THREE.ShaderMaterial({
     fragmentShader: earthFragmentShader,
     uniforms:
     {
+        uDayTexture: new THREE.Uniform(earthDayTexture),
+        uNightTexture: new THREE.Uniform(earthNightTexture),
+        uSpecularCloudsTexture: new THREE.Uniform(earthSpecularCloudsTexture),
+        uSunPosition: new THREE.Uniform(new THREE.Vector3(0,0,0)),
+        uAtmosphereDayColor: new THREE.Uniform(new THREE.Color(earthParameters.atmosphereDayColor)),
+        uAtmosphereTwilightColor: new THREE.Uniform(new THREE.Color(earthParameters.atmosphereTwilightColor))
     }
 })
 const earth = new THREE.Mesh(earthGeometry, earthMaterial)
 scene.add(earth)
 
+const atmosphereMaterial= new THREE.ShaderMaterial({
+    side:THREE.BackSide,
+    transparent:true,
+    vertexShader:atmosphereVertexShader,
+    fragmentShader:atmosphereFragmentShader,
+    uniforms:
+    {
+        uSunPosition: new THREE.Uniform(new THREE.Vector3(0,0,0)),
+        uAtmosphereDayColor: new THREE.Uniform(new THREE.Color(earthParameters.atmosphereDayColor)),
+        uAtmosphereTwilightColor: new THREE.Uniform(new THREE.Color(earthParameters.atmosphereTwilightColor))
+    }
+})
+const atmosphere= new THREE.Mesh(earthGeometry,atmosphereMaterial)
+atmosphere.scale.multiplyScalar(1.04)
+scene.add(atmosphere)
+
+//sun
+debug.phi=1.5
+debug.theta=1
+const sunPosition= new THREE.Spherical(1,debug.phi*Math.PI,debug.theta*Math.PI)
+
+const sun = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5),
+    new THREE.MeshBasicMaterial({color:"yellow"})
+)
+const updateSun =(x)=>
+{
+    sun.position.setFromSpherical(x)
+    earthMaterial.uniforms.uSunPosition.value=sun.position
+    atmosphereMaterial.uniforms.uSunPosition.value=sun.position
+
+    sun.position.multiplyScalar(5)
+}
+
+scene.add(sun)
+updateSun(sunPosition)
+
+gui.add(debug,'theta').min(0).max(2).step(0.001).onChange(()=>
+    {
+        sunPosition.theta=debug.theta*Math.PI
+        updateSun(sunPosition)
+
+    })
+
+
+gui.add(debug,'phi').min(0).max(2).step(0.001).onChange(()=>
+{
+    sunPosition.phi=debug.phi*Math.PI
+    updateSun(sunPosition)
+})
 /**
  * Sizes
  */
@@ -83,7 +174,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(sizes.pixelRatio)
 renderer.setClearColor('#000011')
-
+// console.log(renderer.capabilities.getMaxAnisotropy())
 /**
  * Animate
  */
