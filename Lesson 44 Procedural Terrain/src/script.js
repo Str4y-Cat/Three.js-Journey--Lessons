@@ -2,6 +2,11 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js'
 import GUI from 'lil-gui'
+import {SUBTRACTION,Evaluator,Brush} from 'three-bvh-csg'
+import CustomShaderMaterial from 'three-custom-shader-material/vanilla'
+
+import terrainVertexShader from './shaders/terrain/vertex.glsl'
+import terrainFragmentShader from './shaders/terrain/fragment.glsl'
 
 /**
  * Base
@@ -31,14 +36,118 @@ rgbeLoader.load('/spruit_sunrise.hdr', (environmentMap) =>
     scene.environment = environmentMap
 })
 
-/**
- * Placeholder
- */
-const placeholder = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(2, 5),
-    new THREE.MeshPhysicalMaterial()
+//terrain
+const geometry= new THREE.PlaneGeometry(10,10,500,500)
+geometry.rotateX(-Math.PI*0.5)
+
+debugObject.colorWaterDeep="#002b3d"
+debugObject.colorWaterSurface="#66a8ff"
+debugObject.colorSand="#ffe894"
+debugObject.colorGrass="#85d534"
+debugObject.colorSnow="#ffffff"
+debugObject.colorRock="#bfbd8d"
+
+gui.addColor(debugObject,'colorWaterDeep').onChange(color=>{
+    uniforms.uColorWaterDeep.value=new THREE.Color(debugObject.colorWaterDeep)
+})
+gui.addColor(debugObject,'colorWaterSurface').onChange(color=>{
+    uniforms.uColorWaterSurface.value=new THREE.Color(debugObject.colorWaterSurface)
+})
+gui.addColor(debugObject,'colorSand').onChange(color=>{
+    uniforms.uColorSand.value=new THREE.Color(debugObject.colorSand)
+})
+gui.addColor(debugObject,'colorGrass').onChange(color=>{
+    uniforms.uColorGrass.value=new THREE.Color(debugObject.colorGrass)
+})
+gui.addColor(debugObject,'colorSnow').onChange(color=>{
+    uniforms.uColorSnow.value=new THREE.Color(debugObject.colorSnow)
+})
+gui.addColor(debugObject,'colorRock').onChange(color=>{
+    uniforms.uColorRock.value=new THREE.Color(debugObject.colorRock)
+})
+
+
+const uniforms ={
+    uPositionFrequency:new THREE.Uniform(0.2),
+    uStrength:new THREE.Uniform(2.0),
+    uWarpFrequency:new THREE.Uniform(5.0),
+    uWarpStrength:new THREE.Uniform(0.5),
+    uTime:new THREE.Uniform(0),
+
+    uColorWaterDeep:new THREE.Uniform(new THREE.Color(debugObject.colorWaterDeep)),
+    uColorWaterSurface:new THREE.Uniform(new THREE.Color(debugObject.colorWaterSurface)),
+    uColorSand:new THREE.Uniform(new THREE.Color(debugObject.colorSand)),
+    uColorGrass:new THREE.Uniform(new THREE.Color(debugObject.colorGrass)),
+    uColorSnow:new THREE.Uniform(new THREE.Color(debugObject.colorSnow)),
+    uColorRock:new THREE.Uniform(new THREE.Color(debugObject.colorRock)),
+}
+gui.add(uniforms.uPositionFrequency,'value',0,1,0.001).name('uPosition Frequency')
+gui.add(uniforms.uStrength,'value',0,10,0.001).name('uStrength')
+gui.add(uniforms.uWarpFrequency,'value',0,10,0.001).name('uWarp Frequency')
+gui.add(uniforms.uWarpStrength,'value',0,1,0.001).name('uWarpStrength')
+const material= new CustomShaderMaterial({
+    baseMaterial:THREE.MeshStandardMaterial,
+    vertexShader:terrainVertexShader,
+    fragmentShader:terrainFragmentShader,
+    uniforms:uniforms,
+    
+    //Mesh Standard materail
+
+    metalness:0,
+    roughness:0.5,
+    color:'#85d534'
+
+
+})
+
+const depthmMaterial= new CustomShaderMaterial({
+    baseMaterial:THREE.MeshDepthMaterial,
+    vertexShader:terrainVertexShader,
+    fragmentShader:terrainFragmentShader,
+    uniforms:uniforms,
+    //Mesh Standard materail
+    depthPacking:THREE.RGBADepthPacking
+
+
+})
+
+//wter
+const water= new THREE.Mesh(
+    new THREE.PlaneGeometry(10,10,1,1),
+    new THREE.MeshPhysicalMaterial({
+        transmission:1,
+        roughness:0.3
+    })
 )
-scene.add(placeholder)
+water.rotation.x=-Math.PI * 0.5
+water.position.y=-0.1
+scene.add(water)
+
+const terrain= new THREE.Mesh(geometry,material)
+terrain.castShadow=true
+terrain.receiveShadow=true
+terrain.customDepthMaterial=depthmMaterial
+scene.add(terrain)
+
+//board
+const boardFill= new Brush(new THREE.BoxGeometry(11,2,11))
+// scene.add(boardFill)
+const boardHole= new Brush(new THREE.BoxGeometry(10,2.1,10))
+boardHole.position.y+=0.5
+
+
+//evaluate
+const evalutor= new Evaluator()
+const board= evalutor.evaluate(boardFill,boardHole,SUBTRACTION)
+board.geometry.clearGroups()
+board.material=new THREE.MeshStandardMaterial({
+    color:"#ffffff",
+    metalness:0,
+    roughness:0.3,
+})
+board.castShadow=true
+board.receiveShadow=true
+scene.add(board)
 
 /**
  * Lights
@@ -115,6 +224,7 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
+    uniforms.uTime.value=elapsedTime
     // Update controls
     controls.update()
 
