@@ -9,5 +9,5 @@ Find the course at https://threejs-journey.com/ :D
 
 ## Lesson Structure
 
-Each lesson in the course focuses on a specific topic related to three.js and includes practical exercises, code samples, and demonstrations. I'll be working through these lessons to deepen my understanding of three.js and enhance my skills in 3D web development.
+Each lesson in the course focuses on a specific topic related to three.js and includes a practical exercise, code sample, and demonstration. I'll be working through these lessons to deepen my understanding of three.js and enhance my skills in 3D web development.
 
