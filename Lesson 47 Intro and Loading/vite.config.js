@@ -1,4 +1,6 @@
 import restart from 'vite-plugin-restart'
+import glsl from 'vite-plugin-glsl'
+
 
 export default {
     root: 'src/', // Sources files (typically where index.html is)
@@ -16,6 +18,7 @@ export default {
     },
     plugins:
     [
-        restart({ restart: [ '../static/**', ] }) // Restart server on static file change
+        restart({ restart: [ '../static/**', ] }), // Restart server on static file change
+        glsl() // Handle shader files
     ],
 }

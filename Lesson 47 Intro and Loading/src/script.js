@@ -1,11 +1,52 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import fragmentShader from "./shaders/intro/fragment.glsl"
+import vertexShader from "./shaders/intro/vertex.glsl"
+import gsap from 'gsap'
 
 /**
  * Loaders
  */
-const gltfLoader = new GLTFLoader()
+const bar = document.querySelector(".loading-bar")
+
+const loadingManager= new THREE.LoadingManager(
+    
+        //loaded
+        ()=>
+            {
+                window.setTimeout(()=>{},500)
+                gsap.to(overlayMateral.uniforms.uAlpha,
+                    {
+                        value:0,
+                        duration:3,
+
+                    }
+                )
+                bar.classList.add('ended')
+                bar.style.transform=``
+
+                // gsap.to(bar,
+                //     {
+                //         opacity:0,
+                //         duration:2,
+
+                //     }
+                // )
+                console.log('loaded')
+
+            },
+        //Progress
+        (url,loaded,total)=>
+            {   
+
+                bar.style.transform=`scaleX(${loaded/total})`
+                // console.log(loaded)
+
+            }
+    
+)
+const gltfLoader = new GLTFLoader(loadingManager)
 const cubeTextureLoader = new THREE.CubeTextureLoader()
 
 /**
@@ -19,6 +60,21 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+//overlay
+const overlayGeometry= new THREE.PlaneGeometry(2,2,1,1)
+const overlayMateral= new THREE.ShaderMaterial(
+    {
+        fragmentShader:fragmentShader,
+        vertexShader:vertexShader,
+        transparent:true,
+        uniforms:
+        {
+            uAlpha:new THREE.Uniform(1)
+        }
+    })
+const overlay= new THREE.Mesh(overlayGeometry,overlayMateral)
+scene.add(overlay)
 
 /**
  * Update all materials
