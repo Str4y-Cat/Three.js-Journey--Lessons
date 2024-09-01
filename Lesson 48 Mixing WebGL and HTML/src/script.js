@@ -3,9 +3,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { gsap } from 'gsap'
 
+
 /**
  * Loaders
  */
+let sceneLoaded=false
 const loadingBarElement = document.querySelector('.loading-bar')
 const loadingManager = new THREE.LoadingManager(
     // Loaded
@@ -21,6 +23,10 @@ const loadingManager = new THREE.LoadingManager(
             loadingBarElement.classList.add('ended')
             loadingBarElement.style.transform = ''
         }, 500)
+        window.setTimeout(()=>
+        {
+            sceneLoaded=true
+        },3000)
     },
 
     // Progress
@@ -126,6 +132,37 @@ gltfLoader.load(
         updateAllMaterials()
     }
 )
+/**
+ * Points of interest
+ */
+const points = [
+    {
+        position: new THREE.Vector3(1.55, 0.3, -0.6),
+        element:document.querySelector('.point-0'),
+    },
+    {
+        position: new THREE.Vector3(2, -0.3, 0.6),
+        element:document.querySelector('.point-1'),
+    },
+    {
+        position: new THREE.Vector3(1, 2, -0.6),
+        element:document.querySelector('.point-2'),
+    },
+    {
+        position: new THREE.Vector3(-1.5, 1, -0.3),
+        element:document.querySelector('.point-3'),
+    },
+    {
+        position: new THREE.Vector3(2, 2, -2),
+        element:document.querySelector('.point-4'),
+    }
+
+]
+
+//raycaster
+const rayCaster = new THREE.Raycaster()
+
+
 
 /**
  * Lights
@@ -194,6 +231,40 @@ const tick = () =>
 {
     // Update controls
     controls.update()
+
+    //go through each point
+    if(sceneLoaded)
+    {
+        for(const point of points)
+            {
+                const screenPosition= point.position.clone();
+                screenPosition.project(camera)
+                rayCaster.setFromCamera(screenPosition,camera)
+                const intersections = rayCaster.intersectObjects(scene.children,true)
+                
+                if(intersections.length==0)
+                {
+                }
+                else
+                {   const intersectionDistance=intersections[0].distance
+                    if(intersectionDistance>camera.position.distanceTo(point.position)){
+                        point.element.classList.add('visible')
+                        
+                    } 
+                    else{
+                        point.element.classList.remove('visible')
+        
+                    }
+                }
+        
+                const translateX=screenPosition.x* sizes.width/2
+                const translateY=-screenPosition.y* sizes.height/2
+                point.element.style.transform=`translate(${translateX}px,${translateY}px)`
+                // point.element.style.transform=``
+                // console.log(translateX)
+            }
+    }
+    
 
     // Render
     renderer.render(scene, camera)
