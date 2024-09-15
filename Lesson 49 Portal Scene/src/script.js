@@ -40,7 +40,48 @@ const cube = new THREE.Mesh(
     new THREE.MeshBasicMaterial()
 )
 
-scene.add(cube)
+// scene.add(cube)
+
+/**
+ * Texture
+ */
+
+const bakedTexture= textureLoader.load('baked_texture.jpg')
+bakedTexture.flipY=false
+bakedTexture.colorSpace=THREE.SRGBColorSpace
+
+//pole light material
+const poleLightMaterial= new THREE.MeshBasicMaterial({color:0xffffe5})
+
+//pole light material
+const portalLightMaterial= new THREE.MeshBasicMaterial({color:0xffffe5})
+
+// Model
+const bakedMaterial = new THREE.MeshBasicMaterial({map:bakedTexture})
+gltfLoader.load(
+    'portal_baked.glb',
+    (gltf)=>
+    {
+        // gltf.scene.traverse((child)=>
+        // {
+        //     console.log(child.name)
+        //     child.material= bakedMaterial
+        // })
+        const baked_geometry= gltf.scene.children.find(child=> child.name==="baked")
+        const poleLightA= gltf.scene.children.find(child=> child.name==="poleLightA")
+        const poleLightB= gltf.scene.children.find(child=>child.name==="poleLightB")
+        const portalLight= gltf.scene.children.find(child=>child.name==="portalLight")
+        
+        baked_geometry.material=bakedMaterial
+        poleLightA.material= poleLightMaterial
+        poleLightB.material= poleLightMaterial
+        portalLight.material= portalLightMaterial
+        scene.add(gltf.scene)
+        console.log(gltf.scene)
+    }
+)
+
+
 
 /**
  * Sizes
