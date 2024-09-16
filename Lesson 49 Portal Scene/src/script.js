@@ -4,10 +4,18 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 
+import fireVertex from './fireflies/vertex.glsl'
+import fireFragment from './fireflies/fragment.glsl'
+
 /**
  * Base
  */
 // Debug
+const debugObj=
+{
+
+}
+
 const gui = new GUI({
     width: 400
 })
@@ -32,13 +40,6 @@ dracoLoader.setDecoderPath('draco/')
 const gltfLoader = new GLTFLoader()
 gltfLoader.setDRACOLoader(dracoLoader)
 
-/**
- * Object
- */
-const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial()
-)
 
 // scene.add(cube)
 
@@ -81,8 +82,42 @@ gltfLoader.load(
     }
 )
 
+/**
+ * Fireflys
+ */
+const fireflysGeometry= new THREE.BufferGeometry();
+const firefliesCount= 30
+const positionArray= new Float32Array(firefliesCount*3)
+const randomArray= new Float32Array(firefliesCount)
 
+for(let i=0; i<firefliesCount; i++)
+{
+    let i3=i*3
+    positionArray[i3 + 0] = (Math.random()-0.5 )* 4 
+    positionArray[i3 + 1] = Math.random() *1.5
+    positionArray[i3 + 2] = (Math.random()-0.5) * 4
 
+    randomArray[i]= (Math.random()-0.5)
+}
+
+fireflysGeometry.setAttribute('position',new THREE.BufferAttribute(positionArray,3))
+fireflysGeometry.setAttribute('randomNumber',new THREE.BufferAttribute(randomArray,1))
+// const fireFlysMaterial= new THREE.PointsMaterial({color:"#ffffff",size:0.1, sizeAttenuation:true})
+
+const fireFlysMaterial= new THREE.ShaderMaterial(
+    {
+        vertexShader:fireVertex,
+        fragmentShader:fireFragment,
+        uniforms:
+        {
+            'time': new THREE.Uniform(0),
+
+        }
+    }
+)
+
+const fireFlies = new THREE.Points(fireflysGeometry,fireFlysMaterial)
+scene.add(fireFlies)
 /**
  * Sizes
  */
@@ -130,6 +165,14 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+debugObj.clearColor="#16140e"
+
+renderer.setClearColor(debugObj.clearColor)
+gui.addColor(debugObj,'clearColor').onChange(()=>
+    {
+        renderer.setClearColor(debugObj.clearColor)
+    })
+
 /**
  * Animate
  */
@@ -138,7 +181,7 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
-
+    fireFlies.material.uniforms.time.value=elapsedTime/2
     // Update controls
     controls.update()
 
